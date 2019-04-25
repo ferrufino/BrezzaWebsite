@@ -31,20 +31,20 @@ youtube_username                          :
 # Feature List                            Edit, add or remove features to be presented.
 features                                  :
 
-  - title                                 : Simple decription of hike
-    description                           : Find out exact details like difficulty, distance, elevation, and time. Pet friendly and camping areas
+  - title                                 : Simple descriptions of hikes
+    description                           : Find out exact details like Difficulty, Distance, Elevation, and Time. Pet friendly and Camping Areas
     fontawesome_icon_name                 : magic
     
-  - title                                 : Live information of hike
-    description                           : See how far away is the hike from you, and get directions to start of hike!
+  - title                                 : Live information of hikes
+    description                           : See how far away is the hike from you, and get directions to the start of a hike!
     fontawesome_icon_name                 : mobile
 
   - title                                 : Live conditions of hikes
-    description                           : Find out the Sunrise/Sunset hours, how cloudy is the hike, and how visible it is at the highest elevation point for best views.
+    description                           : Find out the Sunrise/Sunset hours, how Cloudy is the hike, and how Visible it is at the highest elevation point for best views.
     fontawesome_icon_name                 : play-circle
 
   - title                                 : Live weather conditions of hikes
-    description                           : Find out more than just a weather description! Outdoorsy tells you the humidity, barometer, wind direction and wind speed
+    description                           : Find out more than just a weather description! Outdoorsy tells you the Humidity, Barometer, Wind Direction and Wind Speed
     fontawesome_icon_name                 : sync
 
   - title                                 : Order your hike list to your preference
@@ -52,11 +52,11 @@ features                                  :
     fontawesome_icon_name                 : adjust
   
   - title                                 : See yourself on a hike
-    description                           : Stay on the trail by seeing the correct path to follow!
+    description                           : Stay on the trail by seeing the correct path to follow and your current location on it!
     fontawesome_icon_name                 : star
 
   - title                                 : Get cool insights of a hike
-    description                           : By pressing in one of the pins of the hike, you can find hidden gems or the best view points.
+    description                           : By pressing in one of the pins of the hike, you can find hidden comment gems, like the best view points, things to beaware of or highest elevation.
     fontawesome_icon_name                 : arrow-alt-circle-down
 
   - title                                 : # New Feature Title
