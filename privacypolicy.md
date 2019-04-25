@@ -1,3 +1,7 @@
+---
+permalink: /policy/
+title: policy
+---
 # Privacy Policy
 Gustavo Ferrufino built the Outdoorsy app as a Free app. This SERVICE is provided by                     Gustavo Ferrufino at no cost and is intended for use as is. This is done as a side project/hobby from a hiker to hikers community for free.                   
 This page is used to inform visitors regarding my policies with the collection, use, and disclosure of Personal Information if anyone decided to use my Service.                   
