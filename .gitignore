@@ -4,6 +4,7 @@ _site
 Gemfile
 Gemfile.lock
 mobile-app-landing-page.gemspec
+.DS_Store
 *.gemspec
 
 # Created by https://www.gitignore.io/api/git,ruby,jekyll
