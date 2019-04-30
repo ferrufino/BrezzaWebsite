@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset='utf-8' />
   <title>Create a route using the Mapbox Directions API</title>
@@ -7,228 +8,243 @@
   <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.js'></script>
   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css' rel='stylesheet' />
   <style>
-  body { margin:0; padding:0; }
-  #map { position:absolute; top:0; bottom:0; width:100%; }
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
   </style>
 </head>
+
 <body>
-<style>
-  .info-box {
-    height: 500px;
-    width: 150px;
-    position: absolute;
-    top: 20px;
-    left: 10px;
-    background-color: rgba(255, 255, 255, .9);
-    padding: 15px;
-    text-align: left;
-    font-family: 'Arial';
-    margin: 0;
-    font-size: 13px;
-  }
-</style>
+  <style>
+    .info-box {
+      height: 500px;
+      width: 150px;
+      position: absolute;
+      top: 20px;
+      left: 10px;
+      background-color: rgba(255, 255, 255, .9);
+      padding: 15px;
+      text-align: left;
+      font-family: 'Arial';
+      margin: 0;
+      font-size: 13px;
+      overflow: auto;
+    }
+  </style>
 
-<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.0/mapbox-gl-draw.js'></script>
-<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.0/mapbox-gl-draw.css' type='text/css'/>
-<div id='map'></div>
-<div class='info-box'>
-  <p>Draw your route using the draw tools (25 points max)</p> <br/> <p> if exceeded delete by selecting point + Delete key</p>
-  <div>
-        <form id="getCoordinate-form">
-                <label for="coordinate"><b>Add Secret</b></label>
-                <input type="text" id="secret" placeholder="Enter secret key" name="key" required>
-      <label for="coordinate"><b>Add start coordinate</b></label>
-      <input type="text" id="inputCoordinate" placeholder="Enter Coordiante" name="coordinate" required>
-      <button type="submit" class="btn">Submit</button>
-    </form> </div>
-  <div id='calculated-line'></div>
-  <div id='coordinates-pinned'></div>
-  
-</div>
+  <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.0/mapbox-gl-draw.js'></script>
+  <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.0/mapbox-gl-draw.css'
+    type='text/css' />
+  <div id='map'></div>
+  <div class='info-box'>
+    <p>Draw your route using the draw tools (25 points max)</p>
+    <p> if exceeded delete by selecting point + Delete key</p>
+    <div>
+      <form id="getCoordinate-form">
+        <label for="coordinate"><b>Add Secret</b></label>
+        <input type="text" id="secret" placeholder="Enter secret key" name="key" required>
+        <label for="coordinate"><b>Add start coordinate</b></label>
+        <input type="text" id="inputCoordinate" placeholder="Enter Coordiante" name="coordinate" required>
+        <button type="submit" class="btn">Submit</button>
+      </form>
+    </div>
+    <p><b>Copy this text and send it to <br /> outdoorsyclient@gmail.com:</b></p><br />
+    <div id='calculated-line'></div>
+
+  </div>
 
 
-<script>
+  <script>
 
-window.addEventListener("load",function() {
-  document.getElementById('getCoordinate-form').addEventListener("submit",function(e) {
-    e.preventDefault(); // before the code
-    /* do what you want with the form */
+    window.addEventListener("load", function () {
+      document.getElementById('getCoordinate-form').addEventListener("submit", function (e) {
+        e.preventDefault(); // before the code
+        /* do what you want with the form */
 
-    // Should be triggered on form submit
-   
-    var coor = document.getElementById('inputCoordinate').value;
-    var sec = document.getElementById('secret').value;
-    coor = coor.split(',')
-    var coorRegion = [parseFloat(coor[1]), parseFloat(coor[0])];
+        // Should be triggered on form submit
 
-    processForm(coorRegion, sec)
-  });
-});
+        var coor = document.getElementById('inputCoordinate').value;
+        var sec = document.getElementById('secret').value;
+        coor = coor.split(',')
+        var coorRegion = [parseFloat(coor[1]), parseFloat(coor[0])];
 
-function processForm(coorRegion, sec) {
-
-    /* do what you want with the form */
-    mapboxgl.accessToken = sec;
- var map = new mapboxgl.Map({
-  container: 'map', // container id
-  style: 'mapbox://styles/mapbox/outdoors-v9', //hosted style id
-  center: coorRegion, // starting position
-  zoom: 13, // starting zoom
-  minZoom: 11 // keep it local
-});
-
-//////
-//Secondary Functions
-/////
-
-// remove the layer if it exists
-function removeRoute () {
-  if (map.getSource('route')) {
-    map.removeLayer('route');
-    map.removeSource('route');
-    document.getElementById('calculated-line').innerHTML = '';
-  } else  {
-    return;
-  }
-}
-// adds the route as a layer on the map
-function addRoute (coords) {
-  // check if the route is already loaded
-  if (map.getSource('route')) {
-    map.removeLayer('route')
-    map.removeSource('route')
-  } else{
-    map.addLayer({
-      "id": "route",
-      "type": "line",
-      "source": {
-        "type": "geojson",
-        "data": {
-          "type": "Feature",
-          "properties": {},
-          "geometry": coords
-        }
-      },
-      "layout": {
-        "line-join": "round",
-        "line-cap": "round"
-      },
-      "paint": {
-        "line-color": "#3b9ddd",
-        "line-width": 8,
-        "line-opacity": 0.8
-      }
+        processForm(coorRegion, sec)
+      });
     });
-  };
-}
 
+    function processForm(coorRegion, sec) {
 
-// use the coordinates you just drew to make your directions request
-function updateRoute() {
-  removeRoute(); // overwrite any existing layers
-  var data = draw.getAll();
-  var answer = document.getElementById('calculated-line');
-  var lastFeature = data.features.length - 1;
-  var coords = data.features[lastFeature].geometry.coordinates;
-  var newCoords = coords.join(';')
-  getMatch(newCoords);
-}
+      /* do what you want with the form */
+      mapboxgl.accessToken = sec;
+      var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/mapbox/outdoors-v9', //hosted style id
+        center: coorRegion, // starting position
+        zoom: 13, // starting zoom
+        minZoom: 11 // keep it local
+      });
 
+      //////
+      //Secondary Functions
+      /////
 
-// make a directions request
-function getMatch(e) {
-  var url = 'https://api.mapbox.com/directions/v5/mapbox/walking/' + e +'?geometries=geojson&steps=true&&access_token=' + mapboxgl.accessToken;
-  var req = new XMLHttpRequest();
-  req.responseType = 'json';
-  req.open('GET', url, true);
-  req.onload  = function() {
-    var jsonResponse = req.response;
-    var distance = jsonResponse.routes[0].distance*0.001;
-    var duration = jsonResponse.routes[0].duration/60;
-    var coords = jsonResponse.routes[0].geometry;
-    //Format coodinates for Firebase
-    var coorFound = coords.coordinates;
-      var newCoordinates = []
-      for (var i = 0; i < coorFound.length; i++){
-          newCoordinates.push(coorFound[i][1]+","+coorFound[i][0])
+      // remove the layer if it exists
+      function removeRoute() {
+        if (map.getSource('route')) {
+          map.removeLayer('route');
+          map.removeSource('route');
+          document.getElementById('calculated-line').innerHTML = '';
+        } else {
+          return;
         }
-        console.log(newCoordinates);
-    document.getElementById('calculated-line').innerHTML = 'Distance: ' + distance.toFixed(2) + ' km<br>Duration: ' + duration.toFixed(2) + ' minutes <br> Coordinates:'+ JSON.stringify(newCoordinates);
-    //console.log(JSON.stringify(coords.coordinates))
-      // add the route to the map
-      addRoute(coords);
-      
-  };
-  req.send();
-}
-
-
-
-
-/////
-/////END
-/////
-
-var draw = new MapboxDraw({
-  displayControlsDefault: false,
-  controls: {
-    line_string: true,
-    trash: true
-  },
-  styles: [
-    // ACTIVE (being drawn)
-    // line stroke
-    {
-      "id": "gl-draw-line",
-      "type": "line",
-      "filter": ["all", ["==", "$type", "LineString"], ["!=", "mode", "static"]],
-      "layout": {
-        "line-cap": "round",
-        "line-join": "round"
-      },
-      "paint": {
-        "line-color": "#3b9ddd",
-        "line-dasharray": [0.2, 2],
-        "line-width": 4,
-        "line-opacity": 0.7
       }
-    },
-    // vertex point halos
-    {
-      "id": "gl-draw-polygon-and-line-vertex-halo-active",
-      "type": "circle",
-      "filter": ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
-      "paint": {
-        "circle-radius": 10,
-        "circle-color": "#FFF"
+      // adds the route as a layer on the map
+      function addRoute(coords) {
+        // check if the route is already loaded
+        if (map.getSource('route')) {
+          map.removeLayer('route')
+          map.removeSource('route')
+        } else {
+          map.addLayer({
+            "id": "route",
+            "type": "line",
+            "source": {
+              "type": "geojson",
+              "data": {
+                "type": "Feature",
+                "properties": {},
+                "geometry": coords
+              }
+            },
+            "layout": {
+              "line-join": "round",
+              "line-cap": "round"
+            },
+            "paint": {
+              "line-color": "#3b9ddd",
+              "line-width": 8,
+              "line-opacity": 0.8
+            }
+          });
+        };
       }
-    },
-    // vertex points
-    {
-      "id": "gl-draw-polygon-and-line-vertex-active",
-      "type": "circle",
-      "filter": ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
-      "paint": {
-        "circle-radius": 6,
-        "circle-color": "#3b9ddd",
+
+
+      // use the coordinates you just drew to make your directions request
+      function updateRoute() {
+        removeRoute(); // overwrite any existing layers
+        var data = draw.getAll();
+        var answer = document.getElementById('calculated-line');
+        var lastFeature = data.features.length - 1;
+        var coords = data.features[lastFeature].geometry.coordinates;
+        var newCoords = coords.join(';')
+        getMatch(newCoords);
       }
-    },
-  ]
-});
-
-// add the draw tool to the map
-map.addControl(draw);
-
-// add create, update, or delete actions
-map.on('draw.create', updateRoute);
-map.on('draw.update', updateRoute);
-map.on('draw.delete', removeRoute);
-
-}
 
 
+      // make a directions request
+      function getMatch(e) {
+        var url = 'https://api.mapbox.com/directions/v5/mapbox/walking/' + e + '?geometries=geojson&steps=true&&access_token=' + mapboxgl.accessToken;
+        var req = new XMLHttpRequest();
+        req.responseType = 'json';
+        req.open('GET', url, true);
+        req.onload = function () {
+          var jsonResponse = req.response;
+          var distance = jsonResponse.routes[0].distance * 0.001;
+          var duration = jsonResponse.routes[0].duration / 60;
+          var coords = jsonResponse.routes[0].geometry;
+          //Format coodinates for Firebase
+          var coorFound = coords.coordinates;
+          var newCoordinates = []
+          for (var i = 0; i < coorFound.length; i++) {
+            newCoordinates.push(coorFound[i][1] + "," + coorFound[i][0])
+          }
+          console.log(newCoordinates);
+          document.getElementById('calculated-line').innerHTML = 'Distance: ' + distance.toFixed(2) + ' km<br>Duration: ' + duration.toFixed(2) + ' minutes <br> Coordinates:' + JSON.stringify(newCoordinates);
+          //console.log(JSON.stringify(coords.coordinates))
+          // add the route to the map
+          addRoute(coords);
+
+        };
+        req.send();
+      }
 
 
-</script>
+
+
+      /////
+      /////END
+      /////
+
+      var draw = new MapboxDraw({
+        displayControlsDefault: false,
+        controls: {
+          line_string: true,
+          trash: true
+        },
+        styles: [
+          // ACTIVE (being drawn)
+          // line stroke
+          {
+            "id": "gl-draw-line",
+            "type": "line",
+            "filter": ["all", ["==", "$type", "LineString"], ["!=", "mode", "static"]],
+            "layout": {
+              "line-cap": "round",
+              "line-join": "round"
+            },
+            "paint": {
+              "line-color": "#3b9ddd",
+              "line-dasharray": [0.2, 2],
+              "line-width": 4,
+              "line-opacity": 0.7
+            }
+          },
+          // vertex point halos
+          {
+            "id": "gl-draw-polygon-and-line-vertex-halo-active",
+            "type": "circle",
+            "filter": ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
+            "paint": {
+              "circle-radius": 10,
+              "circle-color": "#FFF"
+            }
+          },
+          // vertex points
+          {
+            "id": "gl-draw-polygon-and-line-vertex-active",
+            "type": "circle",
+            "filter": ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
+            "paint": {
+              "circle-radius": 6,
+              "circle-color": "#3b9ddd",
+            }
+          },
+        ]
+      });
+
+      // add the draw tool to the map
+      map.addControl(draw);
+
+      // add create, update, or delete actions
+      map.on('draw.create', updateRoute);
+      map.on('draw.update', updateRoute);
+      map.on('draw.delete', removeRoute);
+
+    }
+
+
+
+
+  </script>
 </body>
+
 </html>

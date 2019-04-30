@@ -20,11 +20,16 @@ Link to privacy policy of third party service providers used by the app
 * [MapBox](https://www.mapbox.com/privacy/)
 * [OpenWeatherMap](https://openweathermap.org/privacy-policy)
 
-## Agreement 
+## General Agreement 
 By installing and using this app, you agree to the following: 
 "I" being the user of the app and "Outdoorsy" all members involved with the app.
 
 I understand and agree that participation in the app carries with it the risk to me of personal or bodily injury (including death) and loss or damage to property, and I willingly and knowingly accept that risk.  I also understand and agree that "Outdoorsy" does not and will not guarantee my safety during my participation using this app.  With this understanding, I, individually, and on behalf of my heirs, successors, assigns, and personal representatives, hereby release, relieve, indemnify and forever discharge "Outdoorsy", its trustees and representatives (in their official and individual capacities) from any and all liability whatsoever for any personal or bodily injury (including death) and loss of or damage to property that I may sustain, including but not limited to any claims, demands, actions, causes of action, judgments, damages, expenses and costs, including attorneys fees, which arise out of, result from, occur during or are connected in any manner with my participation inthe app, any related or independent travel, any activities or field trips, irrespective of whether or not they are sponsored, supervised or controlled by "Outdoorsy".
+
+## Agreement on "Map a Hike" feature
+Using https://outdoorsy.pro/mapHike.html tool allows Outdoorsy to expand the trails it can provide live information about. This tool is used as a free volunteering feature and by using this tool NO compensation will be provided. It is a free creation tool for adding hikes.
+
+I can do as I please with this information and be the final curator to add the trails or not.
 
 ## Log Data
 I want to inform you that whenever you use Outdoorsy, in a case of  an error in the app I collect data and information (through third party products) on your phone  called Log Data. This Log Data may include information such as your device Internet Protocol (“IP”) address, device name, operating system version, the configuration of the app when utilizing Outdoorsy,the time and date of your use of Outdoorsy, and other statistics.                          
