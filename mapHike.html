@@ -59,7 +59,7 @@ window.addEventListener("load",function() {
     var coor = document.getElementById('inputCoordinate').value;
     var sec = document.getElementById('secret').value;
     coor = coor.split(',')
-    var coorRegion = [parseFloat(coor[0]), parseFloat(coor[1])];
+    var coorRegion = [parseFloat(coor[1]), parseFloat(coor[0])];
 
     processForm(coorRegion, sec)
   });
