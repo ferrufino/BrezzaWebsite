@@ -5,8 +5,8 @@
   <meta charset='utf-8' />
   <title>Create a route using the Mapbox Directions API</title>
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.js'></script>
-  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css' rel='stylesheet' />
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet' />
   <style>
     body {
       margin: 0;
@@ -26,7 +26,7 @@
   <style>
     .info-box {
       height: 500px;
-      width: 150px;
+      width: 180px;
       position: absolute;
       top: 20px;
       left: 10px;
@@ -38,12 +38,27 @@
       font-size: 13px;
       overflow: auto;
     }
+
+    .coordinates {
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      position: absolute;
+      bottom: 40px;
+      left: 10px;
+      padding: 5px 10px;
+      margin: 0;
+      font-size: 11px;
+      line-height: 18px;
+      border-radius: 3px;
+      display: none;
+    }
   </style>
 
   <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.0/mapbox-gl-draw.js'></script>
   <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.0/mapbox-gl-draw.css'
     type='text/css' />
   <div id='map'></div>
+  <pre id='coordinates' class='coordinates'></pre>
   <div class='info-box'>
     <p>Draw your route using the draw tools (25 points max)</p>
     <p> if exceeded delete by selecting point + Delete key</p>
@@ -51,19 +66,49 @@
       <form id="getCoordinate-form">
         <label for="coordinate"><b>Add Secret</b></label>
         <input type="text" id="secret" placeholder="Enter secret key" name="key" required>
+        <br />
         <label for="coordinate"><b>Add Start coordinate</b></label>
         <input type="text" id="inputCoordinate" placeholder="Enter Coordiante" name="coordinate" required>
         <button type="submit" class="btn">Submit</button>
       </form>
     </div>
+    <div>
+      <form id="getComment-form">
+        <label for="coordinate"><b>Move pin to location desired to note a comment</b></label>
+        <input type="text" id="commentOnCoordinate" placeholder="Write comment on Pin" name="comment">
+        <button type="Add Coordinate Comment" class="btn">Add Comment</button>
+      </form>
+    </div>
+
     <p><b>Copy the text below & send it to: </b></p>
     <p>outdoorsyclient@gmail.com</p>
+    <div id='coordinate-comments'></div>
     <div id='calculated-line'></div>
-
   </div>
 
-
   <script>
+   var comments = "comments: ";
+    window.addEventListener("load", function () {
+      document.getElementById('getComment-form').addEventListener("submit", function (e) {
+        e.preventDefault(); // before the code
+        /* do what you want with the form */
+
+        // Should be triggered on form submit
+        var commentOnCoordiante = document.getElementById('commentOnCoordinate').value;
+
+        if (document.getElementById('long') == null) {
+          alert("Move pin so it grabs a location");
+        } else {
+          var long = document.getElementById('long').textContent;
+          var lat = document.getElementById('lat').textContent;
+          document.getElementById('coordinate-comments').innerHTML += "{ coordinate: "+long + "," + lat+", comment: '" + commentOnCoordiante+"'},";
+        }
+        // coor = coor.split(',')
+        //var coorRegion = [parseFloat(coor[1]), parseFloat(coor[0])];
+
+
+      });
+    });
 
     window.addEventListener("load", function () {
       document.getElementById('getCoordinate-form').addEventListener("submit", function (e) {
@@ -92,9 +137,98 @@
         zoom: 13, // starting zoom
         minZoom: 11 // keep it local
       });
+      var coordinates = document.getElementById('coordinates');
+      var canvas = map.getCanvasContainer();
+
+      var geojson = {
+        "type": "FeatureCollection",
+        "features": [{
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "coordinates": coorRegion
+          }
+        }]
+      };
+
+      function onMove(e) {
+        var coords = e.lngLat;
+
+        // Set a UI indicator for dragging.
+        canvas.style.cursor = 'grabbing';
+
+        // Update the Point feature in `geojson` coordinates
+        // and call setData to the source layer `point` on it.
+        geojson.features[0].geometry.coordinates = [coords.lng, coords.lat];
+        map.getSource('point').setData(geojson);
+      }
+
+      function onUp(e) {
+        var coords = e.lngLat;
+
+        // Print the coordinates of where the point had
+        // finished being dragged to on the map.
+        coordinates.style.display = 'block';
+        coordinates.innerHTML = 'Longitude: <p id="long">' + coords.lng + '</p> <br />Latitude: <p id="lat">' + coords.lat + '</p>';
+        canvas.style.cursor = '';
+
+        // Unbind mouse/touch events
+        map.off('mousemove', onMove);
+        map.off('touchmove', onMove);
+      }
+
+      map.on('load', function () {
+
+        // Add a single point to the map
+        map.addSource('point', {
+          "type": "geojson",
+          "data": geojson
+        });
+
+        map.addLayer({
+          "id": "point",
+          "type": "circle",
+          "source": "point",
+          "paint": {
+            "circle-radius": 10,
+            "circle-color": "#3887be"
+          }
+        });
+
+        // When the cursor enters a feature in the point layer, prepare for dragging.
+        map.on('mouseenter', 'point', function () {
+          map.setPaintProperty('point', 'circle-color', '#3bb2d0');
+          canvas.style.cursor = 'move';
+        });
+
+        map.on('mouseleave', 'point', function () {
+          map.setPaintProperty('point', 'circle-color', '#3887be');
+          canvas.style.cursor = '';
+        });
+
+        map.on('mousedown', 'point', function (e) {
+          // Prevent the default map drag behavior.
+          e.preventDefault();
+
+          canvas.style.cursor = 'grab';
+
+          map.on('mousemove', onMove);
+          map.once('mouseup', onUp);
+        });
+
+        map.on('touchstart', 'point', function (e) {
+          if (e.points.length !== 1) return;
+
+          // Prevent the default map drag behavior.
+          e.preventDefault();
+
+          map.on('touchmove', onMove);
+          map.once('touchend', onUp);
+        });
+      });
 
       //////
-      //Secondary Functions
+      //Secondary Functions for Mapping hike
       /////
 
       // remove the layer if it exists
@@ -239,11 +373,7 @@
       map.on('draw.create', updateRoute);
       map.on('draw.update', updateRoute);
       map.on('draw.delete', removeRoute);
-
     }
-
-
-
 
   </script>
 </body>
