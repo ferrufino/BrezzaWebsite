@@ -72,15 +72,16 @@
         <button type="submit" class="btn">Submit</button>
       </form>
     </div>
+    <br>
     <div>
       <form id="getComment-form">
-        <label for="coordinate"><b>Move pin to location desired to note a comment</b></label>
+        <label for="coordinate"><b>Move the blue pin to location desired to write a comment</b></label>
         <input type="text" id="commentOnCoordinate" placeholder="Write comment on Pin" name="comment">
         <button type="Add Coordinate Comment" class="btn">Add Comment</button>
       </form>
     </div>
 
-    <p><b>Copy the text below & send it to: </b></p>
+    <p><b>Copy the text below, add a name to the trail & send it to: </b></p>
     <p>outdoorsyclient@gmail.com</p>
     <div id='coordinate-comments'></div>
     <div id='calculated-line'></div>
@@ -101,7 +102,7 @@
         } else {
           var long = document.getElementById('long').textContent;
           var lat = document.getElementById('lat').textContent;
-          document.getElementById('coordinate-comments').innerHTML += "{ coordinate: "+long + "," + lat+", comment: '" + commentOnCoordiante+"'},";
+          document.getElementById('coordinate-comments').innerHTML += "{ coordinate: '"+long + "," + lat+"', comment: '" + commentOnCoordiante+"'},";
         }
         // coor = coor.split(',')
         //var coorRegion = [parseFloat(coor[1]), parseFloat(coor[0])];
@@ -169,7 +170,7 @@
         // Print the coordinates of where the point had
         // finished being dragged to on the map.
         coordinates.style.display = 'block';
-        coordinates.innerHTML = 'Longitude: <p id="long">' + coords.lng + '</p> <br />Latitude: <p id="lat">' + coords.lat + '</p>';
+        coordinates.innerHTML = 'Longitude: <p id="long">' + coords.lng + '</p> Latitude: <p id="lat">' + coords.lat + '</p>';
         canvas.style.cursor = '';
 
         // Unbind mouse/touch events
@@ -280,6 +281,14 @@
         var answer = document.getElementById('calculated-line');
         var lastFeature = data.features.length - 1;
         var coords = data.features[lastFeature].geometry.coordinates;
+        console.log(JSON.stringify(coords));
+                var newCoordinates = []
+          for (var i = 0; i < coords.length; i++) {
+            newCoordinates.push(coords[i][1] + "," + coords[i][0])
+          }
+        //Format coodinates for Firebase
+        document.getElementById('calculated-line').innerHTML = JSON.stringify(newCoordinates);
+
         var newCoords = coords.join(';')
         getMatch(newCoords);
       }
@@ -293,18 +302,11 @@
         req.open('GET', url, true);
         req.onload = function () {
           var jsonResponse = req.response;
+          console.log(JSON.stringify(jsonResponse.routes[0]))
           var distance = jsonResponse.routes[0].distance * 0.001;
           var duration = jsonResponse.routes[0].duration / 60;
           var coords = jsonResponse.routes[0].geometry;
-          //Format coodinates for Firebase
-          var coorFound = coords.coordinates;
-          var newCoordinates = []
-          for (var i = 0; i < coorFound.length; i++) {
-            newCoordinates.push(coorFound[i][1] + "," + coorFound[i][0])
-          }
-          console.log(newCoordinates);
-          document.getElementById('calculated-line').innerHTML = 'Distance: ' + distance.toFixed(2) + ' km<br>Duration: ' + duration.toFixed(2) + ' minutes <br> Coordinates:' + JSON.stringify(newCoordinates);
-          //console.log(JSON.stringify(coords.coordinates))
+          document.getElementById('calculated-line').innerHTML += '<br>Distance: ' + distance.toFixed(2) + ' km<br>Duration: ' + duration.toFixed(2) + ' minutes <br>';
           // add the route to the map
           addRoute(coords);
 
