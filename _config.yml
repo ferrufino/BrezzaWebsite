@@ -1,113 +1,89 @@
 # App Info
-ios_app_id                                : 1457483172                             # Required. # 1457483172 #1234793120   Enter iOS app ID to automatically populate name, price and icons (e.g. 718043190).
+ios_app_id: # Required. # 1457483172 #1234793120   Enter iOS app ID to automatically populate name, price and icons (e.g. 718043190).
 
-appstore_link                             : https://itunes.apple.com/ca/app/outdoorsy/id1457483172?mt=8
-playstore_link                            :                                           # Enter Google Play Store URL.
-presskit_download_link                    :                                          # Enter a link to downloadable file or (e.g. public Dropbox link to a .zip file). 
-                                                                                      # Or upload your press kit file to assets and set path accordingly (e.g. "assets/your_press_kit.zip").
-policy                                    : /policy/
+appstore_link: 
+playstore_link: # Enter Google Play Store URL.
+presskit_download_link:# Enter a link to downloadable file or (e.g. public Dropbox link to a .zip file).
+  # Or upload your press kit file to assets and set path accordingly (e.g. "assets/your_press_kit.zip").
+policy: /policy/
 
+app_icon: assets/appIconBeta.png # Automatically populates if not set and if iOS app ID is set.  Otherwise enter path to icon file manually.
+app_name: Outdoorsy # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
+app_price: Free # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
+app_description: Create, plan, and see live conditions
 
-app_icon                                  : assets/appIcon.png                      # Automatically populates if not set and if iOS app ID is set.  Otherwise enter path to icon file manually.
-app_name                                  : Outdoorsy                                # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
-app_price                                 : Free                                   # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
-app_description                           : Find live conditions of hikes!
-
-enable_smart_app_banner                   : true                                      # Set to true to show a smart app banner at top of page on mobile devices.
-
-
+enable_smart_app_banner: true # Set to true to show a smart app banner at top of page on mobile devices.
 
 # Information About Yourself
-your_name                                 : Gustavo Ferrufino                               
-your_link                                 : https://github.com/ferrufino                   
-your_city                                 : Vancouver                                
-email_address                             : outdoorsyclient@gmail.com
-facebook_username                         :                                           
-instagram_username                        : ferrufinodlf
-twitter_username                          : incanwolf
-github_username                           : ferrufino
-youtube_username                          :
-
-
+your_name: Gustavo Ferrufino
+your_link: https://github.com/ferrufino
+your_city: Vancouver
+email_address: outdoorsyclient@gmail.com
+facebook_username:
+instagram_username: 
+twitter_username: 
+github_username: 
+youtube_username:
 
 # Feature List                            Edit, add or remove features to be presented.
-features                                  :
+features:
+  - title: Create Routes or Waypoints
+    description: Find out exact details like Difficulty, Distance, Elevation, and Time.
+    fontawesome_icon_name: hiking
 
-  - title                                 : Simple descriptions of hikes
-    description                           : Find out exact details like Difficulty, Distance, Elevation, and Time. Pet friendly and Camping Areas.
-    fontawesome_icon_name                 : hiking
-    
-  - title                                 : Live information
-    description                           : See how far away is the hike from you, and get directions to the start of a hike!
-    fontawesome_icon_name                 : road
+  - title:  Weather conditions
+    description: Find out hourly weather conditions, day overview, and daily conditions
+    fontawesome_icon_name: mountain
 
-  - title                                 : Live conditions
-    description                           : Find out the Sunrise/Sunset hours, how Cloudy is the hike, and how Visible it is at the highest elevation point for best views.
-    fontawesome_icon_name                 : mountain
+  - title: Live weather conditions at highest elevation
+    description: See live weather conditions at the highest point.
+    fontawesome_icon_name: cloud-sun-rain
 
-  - title                                 : Live weather conditions
-    description                           : Find out more than just a weather description! Outdoorsy tells you the Humidity, Barometer, Wind Direction and Wind Speed
-    fontawesome_icon_name                 : cloud-sun-rain
+  - title: AI Planner
+    description: Based on all the information gathered get an overview of the route, recommendation when to do it, and a checklist!
+    fontawesome_icon_name: check-square-o
 
-  - title                                 : Order your hike list to your preference
-    description                           : You can order them to the closest to you, hike name, hike distance, hike difficulty, hike region.
-    fontawesome_icon_name                 : sort-amount-up
-  
-  - title                                 : See yourself on a hike
-    description                           : Stay on the trail by seeing the correct path to follow and your current location on it!
-    fontawesome_icon_name                 : search-location 
+  - title: See yourself on a hike
+    description: Stay on the trail by seeing the correct path to follow and your current location on it!
+    fontawesome_icon_name: search-location
 
-  - title                                 : #Get cool insights of a hike
-    description                           : #By pressing in one of the pins of the hike, you can find hidden comment gems, like the best view points, things to beaware of or highest elevation.
-    fontawesome_icon_name                 : #map-pin
+  - title: #Get cool insights of a hike
+    description: #By pressing in one of the pins of the hike, you can find hidden comment gems, like the best view points, things to beaware of or highest elevation.
+    fontawesome_icon_name: #map-pin
 
-  - title                                 : # New Feature Title
-    description                           : # New Feature Description
-    fontawesome_icon_name                 : # Enter Font Awesome icon name (e.g. star). Find icons on fontawesome.com/icons.
-
-
+  - title: # New Feature Title
+    description: # New Feature Description
+    fontawesome_icon_name: # Enter Font Awesome icon name (e.g. star). Find icons on fontawesome.com/icons.
 
 # Theme Settings
-topbar_color                              : "#000000"
-topbar_transparency                       : 0.1
-topbar_title_color                        : "#ffffff"
+topbar_color: "#000000"
+topbar_transparency: 0.1
+topbar_title_color: "#ffffff"
 
-cover_image                               : assets/headerimage.png                    # Replace with alternative image path or image URL.
-cover_overlay_color                       : "#363b3d"
-cover_overlay_transparency                : 0.8
+cover_image: assets/headerimage.png # Replace with alternative image path or image URL.
+cover_overlay_color: "#363b3d"
+cover_overlay_transparency: 0.8
 
-device_color                              : white                                     # Set to: blue, black, yellow, coral or white.
+device_color: white # Set to: blue, black, yellow, coral or white.
 
-body_background_color                     : "ffffff"
+body_background_color: "ffffff"
 
-link_color                                : "#1d63ea"
+link_color: "#1d63ea"
 
-app_title_color                           : "#ffffff"
-app_price_color                           : "#ffffff"
-app_description_color                     : "#ffffff"
+app_title_color: "#ffffff"
+app_price_color: "#ffffff"
+app_description_color: "#ffffff"
 
-feature_title_color                       : "#000000"
-feature_text_color                        : "#666666"
+feature_title_color: "#000000"
+feature_text_color: "#666666"
 
-feature_icons_foreground_color            : "#1d63ea"
-feature_icons_background_color            : "#e6e6e6"
+feature_icons_foreground_color: "#1d63ea"
+feature_icons_background_color: "#e6e6e6"
 
-social_icons_foreground_color             : "#666666"
-social_icons_background_color             : "#e6e6e6"
+social_icons_foreground_color: "#666666"
+social_icons_background_color: "#e6e6e6"
 
-footer_text_color                         : "#666666"
-
-
-
-
-
-
-
-
-
-
-
-
+footer_text_color: "#666666"
 
 ####################################################
 ### Jekyll Configuration. No need to touch this. ###
