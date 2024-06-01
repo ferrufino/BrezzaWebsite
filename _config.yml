@@ -1,10 +1,11 @@
 # App Info
 ios_app_id: # Required. # 1457483172 #1234793120   Enter iOS app ID to automatically populate name, price and icons (e.g. 718043190).
 
-appstore_link: 
+appstore_link:
 playstore_link: # Enter Google Play Store URL.
-presskit_download_link:# Enter a link to downloadable file or (e.g. public Dropbox link to a .zip file).
-  # Or upload your press kit file to assets and set path accordingly (e.g. "assets/your_press_kit.zip").
+presskit_download_link:
+# Enter a link to downloadable file or (e.g. public Dropbox link to a .zip file).
+# Or upload your press kit file to assets and set path accordingly (e.g. "assets/your_press_kit.zip").
 policy: /policy/
 
 app_icon: assets/appIconBeta.png # Automatically populates if not set and if iOS app ID is set.  Otherwise enter path to icon file manually.
@@ -15,14 +16,14 @@ app_description: Create, plan, and see live conditions
 enable_smart_app_banner: true # Set to true to show a smart app banner at top of page on mobile devices.
 
 # Information About Yourself
-your_name: Gustavo Ferrufino
-your_link: https://github.com/ferrufino
-your_city: Vancouver
+your_name: Gustavo
+your_link:
+your_city: Vancouver, BC
 email_address: outdoorsyclient@gmail.com
 facebook_username:
-instagram_username: 
-twitter_username: 
-github_username: 
+instagram_username:
+twitter_username:
+github_username:
 youtube_username:
 
 # Feature List                            Edit, add or remove features to be presented.
@@ -31,7 +32,7 @@ features:
     description: Find out exact details like Difficulty, Distance, Elevation, and Time.
     fontawesome_icon_name: hiking
 
-  - title:  Weather conditions
+  - title: Weather conditions
     description: Find out hourly weather conditions, day overview, and daily conditions
     fontawesome_icon_name: mountain
 
