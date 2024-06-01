@@ -41,8 +41,8 @@ features:
     fontawesome_icon_name: cloud-sun-rain
 
   - title: AI Planner
-    description: Based on all the information gathered get an overview of the route, recommendation when to do it, and a checklist!
-    fontawesome_icon_name: check-square-o
+    description: Based on all the information gathered get an overview of the route, recommendation when to do it (time or day ), and a checklist!
+    fontawesome_icon_name: wand-magic-sparkles
 
   - title: See yourself on a hike
     description: Stay on the trail by seeing the correct path to follow and your current location on it!
@@ -65,7 +65,7 @@ cover_image: assets/headerimage.png # Replace with alternative image path or ima
 cover_overlay_color: "#363b3d"
 cover_overlay_transparency: 0.8
 
-device_color: white # Set to: blue, black, yellow, coral or white.
+device_color: coral # Set to: blue, black, yellow, coral or white.
 
 body_background_color: "ffffff"
 
