@@ -42,7 +42,7 @@ features:
 
   - title: AI Planner
     description: Based on all the information gathered get an overview of the route, recommendation when to do it (time or day ), and a checklist!
-    fontawesome_icon_name: wand-magic-sparkles
+    fontawesome_icon_name: meteor
 
   - title: See yourself on a hike
     description: Stay on the trail by seeing the correct path to follow and your current location on it!
