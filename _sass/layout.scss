@@ -220,9 +220,17 @@ nav > ul li a:active {
 } 
 
 .downloadButtonsContainer {
-	display: inline-block;
-	margin-top: 42px;
-	filter: $drop-shadow;
+    display: flex; /* Flexbox to align buttons horizontally */
+    align-items: center; /* Vertically align buttons */
+    justify-content: flex-start; /* Align buttons to the left */
+    gap: 16px; /* Space between buttons */
+    margin-top: 42px;
+    filter: $drop-shadow;
+
+    @media only screen and (max-width: 992px) {
+        flex-direction: column; /* Stack buttons on mobile */
+        justify-content: center; /* Center align on smaller screens */
+    }
 }
 
 @media only screen and (max-width: 992px) {
@@ -256,8 +264,12 @@ nav > ul li a:active {
 	
 } 
 
-.appStore {
-	height: 75px;
+.playStore, .appStore {
+    height: 65px; /* Ensure uniform height for the App Store image */
+    width: auto; /* Maintain aspect ratio */
+    display: inline-block;
+    vertical-align: middle; /* Align image vertically with button */
+    margin: 0; /* Reset margins */
 }
 
 
@@ -501,4 +513,52 @@ footer {
 
 .hidden {
 	display: none;
+}
+
+// Waitlist Button Container
+.waitlistButtonContainer {
+    display: inline-block; // Aligns inline with other elements
+    margin-left: 16px; // Space between App Store button and Waitlist button
+    vertical-align: middle; // Align vertically with other buttons
+    
+    @media only screen and (max-width: 992px) {
+        display: block; // Stack buttons on smaller screens
+        margin-left: 0;
+        margin-top: 16px;
+        text-align: center; // Center align on mobile
+    }
+}
+
+// Waitlist Button Styles
+.waitlistButton {
+    background-color: #007BFF; // Primary button color
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, 
+	transform 0.2s ease;
+    display: flex; /* Flexbox for vertical alignment */
+    align-items: center; /* Center the text vertically */
+    justify-content: center; /* Center the text horizontally */
+
+    &:hover {
+        background-color: #0056b3; // Darker shade on hover
+        transform: scale(1.05); // Slight scaling effect
+    }
+    
+    &:active {
+        transform: scale(0.95); // Press effect
+    }
+}
+
+// Adjustments for mobile responsiveness
+@media only screen and (max-width: 992px) {
+    .waitlistButton {
+        width: 100%; // Make button full-width on smaller screens
+        text-align: center;
+    }
 }
