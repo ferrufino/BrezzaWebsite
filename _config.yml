@@ -9,10 +9,10 @@ presskit_download_link:
 policy: /policy/
 permalink: /:categories/:title/
 
-app_icon: assets/appIconBeta.png # Automatically populates if not set and if iOS app ID is set.  Otherwise enter path to icon file manually.
-app_name: Outdoorsy # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
+app_icon: assets/appIcon.png # Automatically populates if not set and if iOS app ID is set.  Otherwise enter path to icon file manually.
+app_name: TrailCast # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
 app_price: Free # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
-app_description: Create, plan, and see live conditions.
+app_description: Weather forecasts tailored for trails – stay ready for every ride, hike, or ski! 🚴🏃🏼‍♀️🏃🏻‍♂️⛷️🏂
 
 enable_smart_app_banner: true # Set to true to show a smart app banner at top of page on mobile devices.
 
@@ -20,34 +20,26 @@ enable_smart_app_banner: true # Set to true to show a smart app banner at top of
 your_name: Gustavo
 your_link:
 your_city: Vancouver, BC
-email_address: outdoorsyclient@gmail.com
+email_address:
 facebook_username:
 instagram_username:
-twitter_username:
+twitter_username: ferrufinodlf
 github_username:
 youtube_username:
 
 # Feature List                            Edit, add or remove features to be presented.
 features:
-  - title: Create Routes or Waypoints
-    description: Find out exact details like Difficulty, Distance, Elevation, and Time.
+  - title: Import from Strava
+    description: Import Activities, Saved Routes, or shared Routes by Id from Strava.
     fontawesome_icon_name: hiking
 
-  - title: Weather conditions
-    description: Find out hourly weather conditions, day overview, and daily conditions
-    fontawesome_icon_name: mountain
-
-  - title: Live weather conditions at highest elevation
-    description: See live weather conditions at the highest point.
+  - title: Weather Forecast
+    description: Find out hourly and daily forecast with detailed weather conditions
     fontawesome_icon_name: cloud-sun-rain
 
-  - title: AI Planner
-    description: Based on all info, AI creates a personalized recommendation when to do it (time or day ), and a checklist!
-    fontawesome_icon_name: meteor
-
-  - title: See yourself on a hike
-    description: Stay on the trail by seeing the correct path to follow and your current location on it!
-    fontawesome_icon_name: search-location
+  - title: Premium Weather Insights
+    description: Unlock precise weather forecasts tailored to your trail's exact time and location, complete with interactive charts and detailed conditions to plan your adventure like a pro!
+    fontawesome_icon_name: crown
 
   - title: #Get cool insights of a hike
     description: #By pressing in one of the pins of the hike, you can find hidden comment gems, like the best view points, things to beaware of or highest elevation.
@@ -64,7 +56,7 @@ topbar_title_color: "#ffffff"
 
 cover_image: assets/headerimage.png # Replace with alternative image path or image URL.
 cover_overlay_color: "#363b3d"
-cover_overlay_transparency: 0.8
+cover_overlay_transparency: 0.6
 
 device_color: black # Set to: blue, black, yellow, coral or white.
 

@@ -6,49 +6,50 @@ permalink: /policy/
 
 # Privacy Policy
 
-#### Gustavo Ferrufino built the Outdoorsy app for Free. This APP is provided by Gustavo Ferrufino at no cost and is intended for use as is. This is done as a side project/hobby from a hiker to hikers community for free.
+#### Gustavo Ferrufino built the TrailCast app for free to download. The app provides a basic version at no cost and is intended for use 'as is'.
 
 ## Notice
 
-This page is used to inform visitors regarding my policies with the collection, use, and disclosure of Personal Information if anyone decided to use Outdoorsy.
+This page is used to inform visitors about my policies regarding the collection, use, and disclosure of Personal Information for those who choose to use TrailCast.
 
-If you choose to use Outdoorsy, then you agree to the collection and use of information in relation to this policy. The Personal Information that I collect is used for providing and improving Outdoorsy. I will not use or share your information with anyone except as described in this Privacy Policy.
+If you choose to use TrailCast, you agree to the collection and use of information in accordance with this policy. The Personal Information that I collect is used for providing and improving TrailCast. I will not use or share your information with anyone except as described in this Privacy Policy.
 
-Information collected is used for a better experience, while using Outdoorsy, I may require you to provide me with certain personally identifiable information, including but not limited to User location. The information that I request will be retained on your device.
+As of today, no user data is collected, nor is there any intention to collect it in the future. Your Strava access token and Trails are securely stored locally on your phone, and I do not have access to this data.
 
-The app does use third party services that may collect information used to identify you.
-Link to privacy policy of third party service providers used by the app
+The app uses third-party services to provide various features. Below are links to the privacy policies of these third-party service providers:
 
-- [Firebase Analytics](https://firebase.google.com/policies/analytics)
+- [Firebase RemoteConfig](https://firebase.google.com/docs/remote-config/parameters?template_type=client)
 - [MapBox](https://www.mapbox.com/privacy/)
-- [Apple weather kit](https://www.apple.com/legal/privacy/data/en/weather/#:~:text=To%20understand%20and%20improve%20the,to%20provide%20relevant%20weather%20forecasts.)
-- [Open AI](https://openai.com/policies/privacy-policy/)
+- [Apple WeatherKit](https://www.apple.com/legal/privacy/data/en/weather/#:~:text=To%20understand%20and%20improve%20the,to%20provide%20relevant%20weather%20forecasts.)
 
 ## General Agreement
 
-By installing and using this app, you agree to the following:
-"I" being the user of the app and "Outdoorsy" all members involved with the app.
+By installing and using this app, you agree to the following terms:
 
-I understand and agree that participation in the app carries with it the risk to me of personal or bodily injury (including death) and loss or damage to property, and I willingly and knowingly accept that risk. I also understand and agree that "Outdoorsy" does not and will not guarantee my safety during my participation using this app. With this understanding, I, individually, and on behalf of my heirs, successors, assigns, and personal representatives, hereby release, relieve, indemnify and forever discharge "Outdoorsy", its trustees and representatives (in their official and individual capacities) from any and all liability whatsoever for any personal or bodily injury (including death) and loss of or damage to property that I may sustain, including but not limited to any claims, demands, actions, causes of action, judgments, damages, expenses and costs, including attorneys fees, which arise out of, result from, occur during or are connected in any manner with my participation inthe app, any related or independent travel, any activities or field trips, irrespective of whether or not they are sponsored, supervised or controlled by "Outdoorsy".
+"I" refers to the user of the app, and "TrailCast" refers to all members involved with the app.
 
-## Agreement on "Map a Hike" feature
+I understand and agree that participation in using the app carries the risk of personal or bodily injury (including death) and loss or damage to property. I willingly and knowingly accept these risks. I also understand and agree that "TrailCast" does not and will not guarantee my safety during my use of the app.
 
-Using https://outdoorsy.cc tool allows Outdoorsy to expand the trails it can provide live information about. This tool is used as a free volunteering feature and by using this tool NO compensation will be provided. It is a free creation tool for adding hikes or bike routes.
+With this understanding, I, individually and on behalf of my heirs, successors, assigns, and personal representatives, hereby release, relieve, indemnify, and forever discharge "TrailCast," its trustees, and representatives (in their official and individual capacities) from any and all liability whatsoever for any personal or bodily injury (including death) and loss of or damage to property. This includes, but is not limited to, any claims, demands, actions, causes of action, judgments, damages, expenses, and costs, including attorney fees, which arise out of, result from, occur during, or are connected in any manner with my use of the app, any related or independent travel, or activities, irrespective of whether or not they are sponsored, supervised, or controlled by "TrailCast."
 
-I can do as I please with this information and be the final curator to add the trails or not.
+## Agreement on the "Import from Strava" Feature
+
+The "Import from Strava" feature in TrailCast allows users to import Activities or Saved Routes from Strava. The imported data is limited to the selected routes you choose to import. All this data and access is stored locally on your phone. TrailCast does not collect or store this data externally.
+
+TrailCast complies with Strava’s API usage policies, ensuring that all user data is securely handled and never shared externally. There is no intention of using data from Strava for AI-training.
 
 ## Log Data
 
-I want to inform you that whenever you use Outdoorsy, in a case of an error in the app I collect data and information (through third party products) on your phone called Log Data. This Log Data may include information such as your device Internet Protocol (“IP”) address, device name, operating system version, the configuration of the app when utilizing Outdoorsy,the time and date of your use of Outdoorsy, and other statistics.
+In the event of an error within the app, TrailCast may collect data and information (via third-party services) like Firebase Crashlytics. This Log Data does not include personally identifiable information but may include details such as your device's Internet Protocol ("IP") address, device name, operating system version, the app's configuration at the time of use, the time and date of your use of TrailCast, and other statistics.
 
 ## Children’s Privacy
 
-Outdoorsy does not address anyone under the age of 4. I do not knowingly collect personally identifiable information from children under 4. In the case I discover that a child under 4 has provided me with personal information, I immediately delete this from our servers. If you are a parent or guardian and you are aware that your child has provided me with personal information, please contact me so that I will be able to do necessary actions.
+TrailCast does not address anyone under the age of 4. I do not knowingly collect personally identifiable information from children under 4. If you are a parent or guardian and you are aware that your child has provided personal information, please contact me, and I will take necessary actions to remove such data.
 
 ## Changes to This Privacy Policy
 
-I may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Privacy Policy on this page. These changes are effective immediately after they are posted on this page.
+I may update this Privacy Policy from time to time. You are encouraged to review this page periodically for any changes. Changes will be posted on this page and are effective immediately upon posting.
 
 ## Contact
 
-If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact at outdoorsyclient@gmail.com.
+If you have any questions or suggestions about this Privacy Policy, please contact me at ferrufinodlf@gmail.com.
