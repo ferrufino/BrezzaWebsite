@@ -1,7 +1,7 @@
 # App Info
-ios_app_id: # Required. # 1457483172 #1234793120   Enter iOS app ID to automatically populate name, price and icons (e.g. 718043190).
+ios_app_id: 6740043033 # Required. # 1457483172 #1234793120   Enter iOS app ID to automatically populate name, price and icons (e.g. 718043190).
 
-appstore_link:
+appstore_link: https://apps.apple.com/ca/app/trailcast/id6740043033
 playstore_link: # Enter Google Play Store URL.
 presskit_download_link:
 # Enter a link to downloadable file or (e.g. public Dropbox link to a .zip file).
