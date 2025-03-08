@@ -29,15 +29,15 @@ youtube_username:
 
 # Feature List                            Edit, add or remove features to be presented.
 features:
-  - title: Import from Strava
-    description: Import Activities, Saved Routes, or shared Routes by Id from Strava.
+  - title: Import routes from different sources
+    description: Import from GPX files, Apple fitness Workouts, Strava activities or routes.
     fontawesome_icon_name: hiking
 
   - title: Weather Forecast
     description: Find out hourly and daily forecast with detailed weather conditions
     fontawesome_icon_name: cloud-sun-rain
 
-  - title: Premium Weather Insights
+  - title: Trail Vision - Premium Weather Insights
     description: Unlock precise weather forecasts of your trail's exact time and location, with interactive charts and detailed conditions 💯
     fontawesome_icon_name: crown
 
