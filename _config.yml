@@ -10,9 +10,9 @@ policy: /policy/
 permalink: /:categories/:title/
 
 app_icon: assets/appIcon.png # Automatically populates if not set and if iOS app ID is set.  Otherwise enter path to icon file manually.
-app_name: TrailCast # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
+app_name: Brezza # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
 app_price: Free # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
-app_description: Weather forecasts tailored for trails - Stay ready for every ride, hike, or ski! 🚴🏃🏼‍♀️🏃🏻‍♂️⛷️🏂
+app_description: Plan your routes - Be ready for every ride, ski, hike 🚴🏃🏼‍♀️🏃🏻‍♂️
 
 enable_smart_app_banner: true # Set to true to show a smart app banner at top of page on mobile devices.
 
