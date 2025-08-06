@@ -42,7 +42,7 @@ features:
     fontawesome_icon_name: line-chart
 
   - title: Planner
-    description: Add things to pack!
+    description: Add things to pack! Specify quntities needed.
     fontawesome_icon_name: list
 
   - title: # New Feature title
