@@ -30,18 +30,22 @@ youtube_username:
 # Feature List                            Edit, add or remove features to be presented.
 features:
   - title: Import routes from different sources
-    description: Import from GPX files, Apple fitness Workouts, Strava activities or routes.
-    fontawesome_icon_name: hiking
+    description: Import from Strava activities or routes, GPX files, Apple fitness Workouts.
+    fontawesome_icon_name: road
 
   - title: Weather Forecast
-    description: Find out hourly and daily forecast with detailed weather conditions
+    description: See hourly and daily forecast with detailed weather conditions at the lowest & highest points.
     fontawesome_icon_name: cloud-sun-rain
 
-  - title: Trail Vision - Premium Weather Insights
-    description: Unlock precise weather forecasts of your trail's exact time and location, with interactive charts and detailed conditions 💯
-    fontawesome_icon_name: crown
+  - title: Vista
+    description: Tailored weather forecasts for the exact time and location of your route, featuring interactive charts and detailed conditions 💯
+    fontawesome_icon_name: line-chart
 
-  - title: # New Feature Title
+  - title: Planner
+    description: Add things to pack!
+    fontawesome_icon_name: list
+
+  - title: # New Feature title
     description: # New Feature Description
     fontawesome_icon_name: # Enter Font Awesome icon name (e.g. star). Find icons on fontawesome.com/icons.
 
