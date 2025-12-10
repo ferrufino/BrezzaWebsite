@@ -590,11 +590,17 @@ footer {
 
 .extras-section section {
 	margin-bottom: 40px;
+	background-color: rgba(255, 255, 255, 0.9);
+	border-radius: 24px;
+	padding: 24px 24px 28px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
 }
 
 .extras-section h2 {
 	color: $feature-title-color;
 	margin-bottom: 12px;
+	font-size: 2.4rem;
+	font-weight: 600;
 }
 
 .extras-section p,
