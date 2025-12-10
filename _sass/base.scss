@@ -14,6 +14,7 @@ html {
 body {
 	font-size: 2rem;
 	background-color: $body-color;
+	font-family: 'Lato', 'Helvetica Neue', sans-serif;
 }
 
 h1 {
@@ -22,10 +23,12 @@ h1 {
 
 h2 {
 	font-size: 2rem;
+	letter-spacing: 0.04em;
 }
 
 h3 {
     font-size: 2rem;
+    letter-spacing: 0.02em;
 }
 
 // Better font rendering
