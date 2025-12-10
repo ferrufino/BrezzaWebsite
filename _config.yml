@@ -28,32 +28,6 @@ twitter_username: ferrufinodlf
 github_username:
 youtube_username:
 
-# Feature List                            Edit, add or remove features to be presented.
-features:
-  - title: Vista route-based weather
-    description: See exactly where your route runs into sun, rain, wind and low visibility so you can pick the safest, most rewarding window.
-    fontawesome_icon_name: route
-
-  - title: AI prep list (gear & nutrition)
-    description: Turn forecast + sport into a simple AI packing list and fueling plan, so you’re never underdressed or underfueled.
-    fontawesome_icon_name: magic
-
-  - title: Today’s call readiness
-    description: A clear yes/no signal for today’s effort based on your recent load, sleep, HRV and resting heart rate from Apple Health.
-    fontawesome_icon_name: heartbeat
-
-  - title: Import routes from everywhere
-    description: Keep your favorite rides and hikes in one library—Strava, Ride with GPS, GPX/FIT and Apple Fitness all live inside Brezza.
-    fontawesome_icon_name: cloud-download-alt
-
-  - title: Progress & training insight
-    description: See how training is stacking up with weekly load, duration, distance, elevation and a compact VO₂Max trend.
-    fontawesome_icon_name: chart-line
-
-  - title: Built for safety & privacy
-    description: Serious forecast data powered by global models, with health metrics flowing securely via Apple Health—never sold or shared.
-    fontawesome_icon_name: shield-alt
-
 # Theme Settings
 topbar_color: "#000000"
 topbar_transparency: 0.3

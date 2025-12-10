@@ -27,13 +27,12 @@
 	padding-left: 15px;
 	padding-right: 15px;
 	grid-template-columns: repeat(12, 1fr);
-	grid-template-rows: 115px 876px auto auto auto auto;
+	grid-template-rows: 115px 876px auto auto auto;
 	grid-column-gap: 30px;
 	grid-template-areas: 
 		"h h h h h h h h h h h h"
 		"p p p p p i i i i i i i"
 		"a a a a a a a a a a a a"
-		"c c c c c c c c c c c c"
 		"e e e e e e e e e e e e"
 		"f f f f f f f f f f f f";
 }
@@ -136,18 +135,40 @@ nav > ul li a:active {
 	grid-area: i;
 	display: flex;
 	flex-wrap: wrap;
-	padding-top: 140px;
+	align-items: stretch;
 	align-content: flex-start;
+	padding: 48px;
+	padding-top: 72px;
+	padding-bottom: 56px;
+	gap: 40px;
+	background: linear-gradient(140deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04));
+	backdrop-filter: blur(32px);
+	border-radius: 32px;
+	box-shadow: 0 40px 80px rgba(14, 19, 48, 0.25);
+	margin-top: 40px;
 }
 
 @media only screen and (max-width: 992px) {
 
 	.appInfo {
-		padding-top: 50px;
+		flex-direction: column;
+		align-items: center;
+		padding: 32px 20px;
+		margin-top: 24px;
+	}
+
+	.hero-text {
+		max-width: 100%;
+	}
+
+	.hero-badges {
 		justify-content: center;
 	}
 
-} 
+	.hero-description {
+		font-size: 1.9rem;
+	}
+}
 
 .appIconShadow {
 	display: flex;
@@ -201,14 +222,68 @@ nav > ul li a:active {
 	
 } 
 
+.hero-text {
+	flex: 1 1 360px;
+	max-width: 620px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.hero-eyebrow {
+	font-size: 1.4rem;
+	letter-spacing: 0.4em;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.7);
+}
+
+.hero-description {
+	font-size: 2rem;
+	line-height: 1.5;
+	color: rgba(0, 0, 0, 0.85);
+	max-width: 540px;
+}
+
+.hero-note {
+	font-size: 1.6rem;
+	color: rgba(6, 10, 40, 0.8);
+	margin-bottom: 8px;
+}
+
+.hero-badges {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.hero-badges span {
+	font-size: 1.4rem;
+	padding: 8px 16px;
+	border-radius: 999px;
+	background: rgba(29, 99, 234, 0.12);
+	border: 1px solid rgba(29, 99, 234, 0.3);
+	color: #1d63ea;
+	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.hero-badges span:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 8px 20px rgba(29, 99, 234, 0.35);
+}
+
 .appDescriptionContainer {
 	font-size: 2.5rem;
 	font-weight: normal;
 	width: 100%;
 	align-items: flex-start;
-	margin-top: 45px;
+	margin-top: 18px;
 	flex: 0 1 auto;
 	line-height: 1.5;
+	color: rgba(17, 24, 39, 0.85);
 }
 
 .appDescription {
@@ -286,6 +361,17 @@ nav > ul li a:active {
 	background-size: 400px auto;
 	background-repeat: no-repeat;
 	margin-top: 68px;
+	position: relative;
+}
+
+.iphonePreview::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.35), rgba(255,255,255,0));
+	pointer-events: none;
+	opacity: 0.6;
+	border-radius: 32px;
 }
 
 .iphoneScreen {
@@ -303,11 +389,26 @@ nav > ul li a:active {
 	clip-path: url(#screenMask);
 	margin-left: 26px;
 	margin-top: 23px;
+	box-shadow: 0 30px 70px rgba(6, 10, 40, 0.35);
+	border: 1px solid rgba(255, 255, 255, 0.25);
+	overflow: hidden;
+	animation: heroFloat 8s ease-in-out infinite alternate;
 }
 
 .videoContainer > video {
 	width: 349px;
 	height: 755px;
+	object-fit: cover;
+	display: block;
+}
+
+@keyframes heroFloat {
+	0% {
+		transform: translateY(0px);
+	}
+	100% {
+		transform: translateY(-12px);
+	}
 }
 
 @media only screen and (max-width: 1070px) {
@@ -373,82 +474,7 @@ nav > ul li a:active {
 
 // Feature List
 
-body {
-	font-size: 2rem;
-	background-color: $body-color;
-	background-image: radial-gradient(circle at top left, rgba(255,255,255,0.25), transparent 45%), 
-										radial-gradient(circle at calc(100% - 200px) 0, rgba(29,99,234,0.15), transparent 40%);
-}
-
-.features-wrapper {
-	grid-area: c;
-	margin-top: 60px;
-	background: rgba(255, 255, 255, 0.95);
-	border-radius: 40px;
-	padding: 48px 36px;
-	box-shadow: 0 40px 60px rgba(12, 12, 50, 0.18);
-	border: 1px solid rgba(255, 255, 255, 0.4);
-	position: relative;
-	overflow: hidden;
-}
-
-.features-wrapper::after {
-	content: "";
-	position: absolute;
-	inset: 0;
-	background: linear-gradient(135deg, rgba(29, 99, 234, 0.05), rgba(255, 255, 255, 0));
-	pointer-events: none;
-}
-
-.features {
-	display: flex;
-	align-content: center;
-	justify-content: space-between;
-	flex-wrap: wrap;
-	gap: 20px;
-	position: relative;
-	z-index: 1;
-}
-
-.feature {
-	display: flex;
-	padding: 22px 24px;
-	width: calc(100%/3);
-	min-width: 200px;
-	background: rgba(250, 250, 255, 0.9);
-	border-radius: 20px;
-	box-shadow: 0 15px 30px rgba(6, 10, 40, 0.1);
-	align-items: center;
-	transition: transform 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
-}
-
-.feature:nth-child(-n+3) {
-    padding-top: 0px;   
-}
-
-.feature:nth-child(3n) {
-	padding-right: 0px;
-}
-
-.feature:nth-child(3n+1) {
-	padding-left: 0px;
-}
-
-.iconBack {
-	color: $feature-icons-background-color;
-}
-
-.iconTop {
-	color: $feature-icons-foreground-color;
-}
-
-.socialIconBack {
-	color: $social-icons-background-color;
-}
-
-.socialIconTop {
-	color: $social-icons-foreground-color;
-}
+# body gradients kept earlier already?
 
 .featureText {
 	margin-left: 18px;
@@ -587,10 +613,12 @@ footer {
 	min-width: 260px;
 	max-width: 420px;
 	text-align: left;
-	background: rgba(255,255,255,0.92);
+	background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(246,248,255,0.95));
 	border-radius: 26px;
-	padding: 16px;
-	box-shadow: 0 20px 40px rgba(5, 8, 30, 0.15);
+	padding: 20px;
+	box-shadow: 0 25px 60px rgba(3, 9, 25, 0.25);
+	border: 1px solid rgba(29, 99, 234, 0.15);
+	transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 
 .app-row__item img {
@@ -598,13 +626,18 @@ footer {
 	width: 100%;
 	height: auto;
 	border-radius: 24px;
-	box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+	box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
 	margin-bottom: 16px;
 }
 
 .app-row__item h3 {
 	color: $feature-title-color;
 	margin-bottom: 6px;
+}
+
+.app-row__item:hover {
+	transform: translateY(-6px);
+	box-shadow: 0 30px 70px rgba(24, 38, 84, 0.3);
 }
 
 .app-row__item p {
@@ -659,17 +692,32 @@ footer {
 	line-height: 1.5;
 }
 
-.import-logos {
-	list-style: none;
-	padding: 0;
-	display: flex;
-	flex-wrap: wrap;
-	gap: 12px 24px;
-	margin-top: 12px;
+.import-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 18px;
+	margin-top: 18px;
 }
 
-.import-logos li::before {
-	content: "• ";
+.import-chip {
+	background: rgba(255, 255, 255, 0.92);
+	border-radius: 20px;
+	padding: 20px;
+	border: 1px solid rgba(29, 99, 234, 0.15);
+	box-shadow: 0 18px 45px rgba(5, 10, 30, 0.15);
+}
+
+.import-chip strong {
+	font-size: 1.6rem;
+	display: block;
+	margin-bottom: 6px;
+	color: $feature-title-color;
+}
+
+.import-chip p {
+	color: $feature-text-color;
+	font-size: 1.4rem;
+	line-height: 1.6;
 }
 
 .steps {
@@ -680,14 +728,37 @@ footer {
 }
 
 .step {
-	flex: 1 1 30%;
-	min-width: 220px;
+	flex: 1 1 280px;
+	min-width: 230px;
+	background: rgba(255, 255, 255, 0.9);
+	border-radius: 28px;
+	padding: 24px;
+	box-shadow: 0 25px 50px rgba(5, 12, 34, 0.18);
+	border: 1px solid rgba(29, 99, 234, 0.12);
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 @media only screen and (max-width: 992px) {
 	.steps {
 		flex-direction: column;
 	}
+}
+
+.step h3 {
+	font-size: 1.9rem;
+	color: $feature-title-color;
+	margin-bottom: 12px;
+}
+
+.step p {
+	color: $feature-text-color;
+	font-size: 1.5rem;
+	line-height: 1.6;
+}
+
+.step:hover {
+	transform: translateY(-6px);
+	box-shadow: 0 35px 70px rgba(5, 12, 34, 0.25);
 }
 
 // Waitlist Button Styles

@@ -16,14 +16,12 @@
                             </clipPath>
                         </svg>
 
-                        <div class="videoContainer hidden">
-                            <video class="screenvideo" autoplay="autoplay" controls="controls">
+                        <div class="videoContainer">
+                            <video class="screenvideo" autoplay muted loop playsinline poster="{{ '/assets/screenshot/vista.png' | relative_url }}">
+                                <source src="{{ '/assets/videos/VistaLoading.webm' | relative_url }}" type="video/webm">
+                                <source src="{{ '/assets/videos/VistaLoading.MP4' | relative_url }}" type="video/mp4">
                             </video>
-                        </div>  
-                        
-                        <img class="iphoneScreen hidden" src="" alt="">
-
-                        {% include screencontent.html %}
+                        </div>
 
                     </div>
                     <div class="appInfo">
@@ -37,17 +35,25 @@
                             </svg>
                             <img class="appIconLarge" src="{{ site.app_icon }}">
                         </div>
-                        <div class="appNamePriceContainer">
-                            <h1 class="appName">
-                                {{ site.app_name }}
-                            </h1>
-                            <h2 class="appPrice">
-                                {{ site.app_price }}
-                            </h2>
+                        <div class="hero-text">
+                            <p class="hero-eyebrow">Vista weather • AI prep • Progress</p>
+                            <h1 class="appName">{{ site.app_name }}</h1>
+                            <h2 class="appPrice">{{ site.app_price }}</h2>
+                            <p class="hero-description">
+                                Brezza finds your go/no-go window, builds AI gear & nutrition for each route, and pairs it with load, sleep, HRV, and respiration so you move with confidence.
+                            </p>
+                            <p class="hero-note">
+                                Weather recommendations honor the ideal conditions you define per sport before planning any gear or fueling.
+                            </p>
+                            <div class="hero-badges">
+                                <span>Segment forecasts, pace aware</span>
+                                <span>AI kit + fueling tuned to the window</span>
+                                <span>Daily readiness from Apple Health metrics</span>
+                            </div>
                         </div>
                         <div class="appDescriptionContainer">
                             <p class ="appDescription">
-                                {{ site.app_description }}
+                                Vista, AI Prep, and Progress work together so you know when to push, pack the right gear, and recover smarter after every ride, hike, or ski.
                             </p>
                         </div>
                         <div class="downloadButtonsContainer">
@@ -63,7 +69,6 @@
                         </div>
                     </div>
                     {% include app_row.html %}
-                    {% include features.html %}
                     <section class="extras-section">
                         {% include imports_section.html %}
                         {% include how_it_works.html %}
