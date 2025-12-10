@@ -40,11 +40,11 @@ features:
 
   - title: Today’s call readiness
     description: See if today is a good day to push or back off using training load, sleep, HRV, resting heart rate, and more from Apple Health.
-    fontawesome_icon_name: heart-pulse
+    fontawesome_icon_name: heartbeat
 
   - title: Import routes from everywhere
     description: Bring in routes from Strava, Ride with GPS, GPX/FIT files, and Apple Fitness workouts—then save Vista forecasts for offline use.
-    fontawesome_icon_name: cloud-arrow-down
+    fontawesome_icon_name: cloud-download-alt
 
   - title: Progress & training insight
     description: Track weekly load, duration, distance, elevation gain, active energy, and a compact VO₂Max trend to see how training is stacking up.
@@ -52,7 +52,7 @@ features:
 
   - title: Built for safety & privacy
     description: Powered by global weather models (NOAA, ECMWF, JMA and more). Health data stays on your device and flows securely via Apple Health.
-    fontawesome_icon_name: shield-heart
+    fontawesome_icon_name: shield-alt
 
 # Theme Settings
 topbar_color: "#000000"
