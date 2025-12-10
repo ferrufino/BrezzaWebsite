@@ -13,7 +13,7 @@ permalink: /:categories/:title/
 app_icon: assets/appIcon.png # Automatically populates if not set and if iOS app ID is set.  Otherwise enter path to icon file manually.
 app_name: Brezza # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
 app_price: Free # Automatically populates if not set and if iOS app ID is set.  Otherwise enter manually.
-app_description: Plan your routes - Be ready for every ride, ski, hike
+app_description: AI route weather, gear & nutrition planning, and body readiness in one app.
 
 enable_smart_app_banner: true # Set to true to show a smart app banner at top of page on mobile devices.
 
@@ -30,25 +30,29 @@ youtube_username:
 
 # Feature List                            Edit, add or remove features to be presented.
 features:
-  - title: Add a waypoint or Import routes from different sources
-    description: Strava activities or routes, GPX files, Apple fitness Workouts. 🚴⛷️🏃🏼‍♀️🏃🏻‍♂️
-    fontawesome_icon_name: road
+  - title: Vista route-based weather
+    description: Forecast every segment of your route by time and pace—visibility, temperature, rain/snow, wind and gusts at low and high points.
+    fontawesome_icon_name: route
 
-  - title: Weather Forecast
-    description: See hourly and daily forecast with detailed weather conditions at the lowest & highest points.
-    fontawesome_icon_name: cloud-sun-rain
+  - title: AI prep list (gear & nutrition)
+    description: One-tap AI summary plus gear and fueling lists tuned to your sport, forecast, effort, and personal comfort settings.
+    fontawesome_icon_name: magic
 
-  - title: Vista
-    description: Tailored weather forecasts for the exact time and location of your route, featuring interactive charts and detailed conditions 💯
+  - title: Today’s call readiness
+    description: See if today is a good day to push or back off using training load, sleep, HRV, resting heart rate, and more from Apple Health.
+    fontawesome_icon_name: heart-pulse
+
+  - title: Import routes from everywhere
+    description: Bring in routes from Strava, Ride with GPS, GPX/FIT files, and Apple Fitness workouts—then save Vista forecasts for offline use.
+    fontawesome_icon_name: cloud-arrow-down
+
+  - title: Progress & training insight
+    description: Track weekly load, duration, distance, elevation gain, active energy, and a compact VO₂Max trend to see how training is stacking up.
     fontawesome_icon_name: chart-line
 
-  - title: Planner
-    description: Add things to pack! Specify quantities needed.
-    fontawesome_icon_name: list
-
-  - title: # New Feature title
-    description: # New Feature Description
-    fontawesome_icon_name: # Enter Font Awesome icon name (e.g. star). Find icons on fontawesome.com/icons.
+  - title: Built for safety & privacy
+    description: Powered by global weather models (NOAA, ECMWF, JMA and more). Health data stays on your device and flows securely via Apple Health.
+    fontawesome_icon_name: shield-heart
 
 # Theme Settings
 topbar_color: "#000000"
