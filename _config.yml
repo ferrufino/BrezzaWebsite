@@ -71,6 +71,7 @@ exclude:
   - LICENSE
   - README.md
   - CNAME
+  - vendor
 
 plugins:
   - jekyll-redirect-from
