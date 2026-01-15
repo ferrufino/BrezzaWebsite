@@ -22,7 +22,8 @@
   }
 
   const shareUrl = `https://brezza.cc/r/${encodeURIComponent(slug)}`;
-  if (openLink) openLink.href = shareUrl;
+  const openUrl = `${shareUrl}?open=1`;
+  if (openLink) openLink.href = openUrl;
   if (copyLink) {
     copyLink.addEventListener("click", async () => {
       try {
