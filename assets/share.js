@@ -10,7 +10,6 @@
   const routeMeta = document.getElementById("share-meta");
   const routeSvg = document.getElementById("route-svg");
   const routeMapEmpty = document.getElementById("route-map-empty");
-  const openLink = document.getElementById("open-link");
   const copyLink = document.getElementById("copy-link");
   const errorBox = document.getElementById("share-error");
   const errorBody = document.getElementById("share-error-body");
@@ -22,8 +21,6 @@
   }
 
   const shareUrl = `https://brezza.cc/r/${encodeURIComponent(slug)}`;
-  const openUrl = `${shareUrl}?open=1`;
-  if (openLink) openLink.href = openUrl;
   if (copyLink) {
     copyLink.addEventListener("click", async () => {
       try {
@@ -83,7 +80,7 @@
     routeDistance.textContent = formatDistance(route.distance_m);
     routeElevation.textContent = formatElevation(route.elevation_gain_m);
     routeSport.textContent = formatSport(route.sport_type);
-    routeMeta.textContent = "Open in Brezza to save or edit this route.";
+    routeMeta.textContent = "Copy the link to share this route.";
 
     if (route.polyline) {
       const coords = decodePolyline(route.polyline);
