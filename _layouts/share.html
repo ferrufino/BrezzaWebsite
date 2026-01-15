@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Shared Route • Brezza</title>
+  <meta name="description" content="View a shared Brezza route and open it in the app.">
+
+  <link rel="shortcut icon" href="{{ site.app_icon }}">
+
+  {% if site.enable_smart_app_banner %}
+  <meta name="apple-itunes-app" content="app-id={{ site.ios_app_id }}">
+  {% endif %}
+
+  <link rel="stylesheet" href="{{ '/main.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/share.css' | relative_url }}">
+</head>
+<body class="share-body">
+  <main class="share-shell">
+    {{ content }}
+  </main>
+
+  <script src="{{ '/assets/share.js' | relative_url }}"></script>
+</body>
+</html>

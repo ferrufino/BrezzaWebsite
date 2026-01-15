@@ -75,3 +75,6 @@ exclude:
 
 plugins:
   - jekyll-redirect-from
+
+include:
+  - ".well-known"

@@ -1,0 +1,40 @@
+<section class="share-card" id="share-card" data-state="loading">
+  <div class="share-header">
+    <span class="share-eyebrow">Shared on Brezza</span>
+    <h1 id="route-name">Loading route…</h1>
+    <p class="share-owner" id="route-owner"></p>
+  </div>
+
+  <div class="share-map" id="route-map">
+    <svg id="route-svg" viewBox="0 0 600 360" aria-hidden="true"></svg>
+    <div class="share-map-empty" id="route-map-empty">Route preview loading…</div>
+  </div>
+
+  <div class="share-stats">
+    <div>
+      <span>Distance</span>
+      <strong id="route-distance">—</strong>
+    </div>
+    <div>
+      <span>Elev Gain</span>
+      <strong id="route-elevation">—</strong>
+    </div>
+    <div>
+      <span>Sport</span>
+      <strong id="route-sport">—</strong>
+    </div>
+  </div>
+
+  <div class="share-actions">
+    <a class="button primary" id="open-link" href="#">Open in Brezza</a>
+    <button class="button ghost" id="copy-link" type="button">Copy link</button>
+  </div>
+
+  <p class="share-meta" id="share-meta"></p>
+
+  <div class="share-error" id="share-error">
+    <p class="share-error-title">This link isn’t available.</p>
+    <p class="share-error-body" id="share-error-body"></p>
+    <a class="button primary" id="store-link" href="{{ site.appstore_link }}">Get the app</a>
+  </div>
+</section>
