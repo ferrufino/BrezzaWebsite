@@ -153,6 +153,12 @@
   margin: 0;
 }
 
+.share-footer {
+  font-size: 1.2rem;
+  color: var(--share-muted);
+  margin: 12px 0 0;
+}
+
 .share-error {
   display: none;
   margin-top: 16px;
@@ -177,7 +183,8 @@
 .share-card[data-state="error"] .share-map,
 .share-card[data-state="error"] .share-stats,
 .share-card[data-state="error"] .share-actions,
-.share-card[data-state="error"] .share-meta {
+.share-card[data-state="error"] .share-meta,
+.share-card[data-state="error"] .share-footer {
   display: none;
 }
 
