@@ -80,7 +80,7 @@
     routeDistance.textContent = formatDistance(route.distance_m);
     routeElevation.textContent = formatElevation(route.elevation_gain_m);
     routeSport.textContent = formatSport(route.sport_type);
-    routeMeta.textContent = "Copy the link to share this route.";
+    routeMeta.textContent = "Tap Open in the banner to view this route in the Brezza app.";
 
     if (route.polyline) {
       const coords = decodePolyline(route.polyline);
