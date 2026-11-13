@@ -1,22 +1,501 @@
 (() => {
-'use strict';
-const $ = id => document.getElementById(id), api = 'https://brezza-backend-production.up.railway.app';
-const parts = location.pathname.split('/').filter(Boolean), kind = parts[0];
-const id = parts[1] || new URLSearchParams(location.search).get('slug');
-const el = (tag, text, cls) => { const n = document.createElement(tag); if(text !== undefined) n.textContent = text; if(cls) n.className = cls; return n; };
-const number = (v, digits=0) => Number(v).toLocaleString(undefined,{maximumFractionDigits:digits});
-const direction = v => ['N','NE','E','SE','S','SW','W','NW'][Math.round(v/45)%8];
-let plan, conditions, map, marker, rows=[], cursors=[];
-const time = v => new Intl.DateTimeFormat(undefined,{timeZone:plan.timezone,hour:'numeric',minute:'2-digit'}).format(new Date(v));
-const date = v => new Intl.DateTimeFormat(undefined,{timeZone:plan.timezone,month:'short',day:'numeric',year:'numeric'}).format(new Date(v));
-function decode(s){let i=0,lat=0,lng=0,result=[]; while(i<s.length){const part=()=>{let value=0,shift=0,b; do{if(i>=s.length||shift>30)throw Error('Invalid route geometry');b=s.charCodeAt(i++)-63;if(b<0||b>63)throw Error('Invalid route geometry');value|=(b&31)<<shift;shift+=5;}while(b>=32);return value&1?~(value>>1):value>>1;}; lat+=part();lng+=part();result.push([lat/1e5,lng/1e5]);} return result;}
-function mapRoute(polyline){if(!window.L){$('map').textContent='The map could not load. Forecast details are available below.';return;}map=L.map('map',{scrollWheelZoom:false});L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',maxZoom:19}).addTo(map);const coords=decode(polyline);if(coords.length<2)throw Error('Route geometry is unavailable');const line=L.polyline(coords,{color:'#1687b5',weight:5}).addTo(map);map.fitBounds(line.getBounds(),{padding:[28,28],maxZoom:15});}
-function cell(parent,label,value){const c=el('div');c.append(el('small',label),el('strong',value));parent.append(c);}
-function select(i){i=Math.max(0,Math.min(conditions.length-1,i));const s=plan.segments[i],w=conditions[i];$('sample').value=i;$('sample-label').textContent=number(s.distance_km,1)+' km · '+time(s.at);const panel=$('point');panel.replaceChildren(el('div',i===0?'START':i===conditions.length-1?'FINISH':'ON THE ROUTE','eyebrow'),el('h2',time(s.at)),el('p',date(s.at)+' · '+number(s.distance_km,1)+' km','point-distance'));const grid=el('div',undefined,'point-grid');cell(grid,'Temperature',number(w.temperature_c,1)+'°C');cell(grid,'Feels like',number(w.feels_like_c,1)+'°C');cell(grid,'Rain chance',number(w.rain_chance_pct)+'%');cell(grid,'Rain / hour',number(w.rain_mm,1)+' mm');cell(grid,'Wind from '+direction(w.wind_from_deg),number(w.wind_kph)+' km/h');cell(grid,'Gusts',number(w.gust_kph)+' km/h');cell(grid,'Elevation',number(s.elevation_m)+' m');cell(grid,'Humidity',number(w.humidity_pct)+'%');cell(grid,'Cloud',number(w.cloud_pct)+'%');cell(grid,'Visibility',number(w.visibility_m/1000,1)+' km');cell(grid,'UV index',number(w.uv));if(w.snow_cm>0)cell(grid,'Snow / hour',number(w.snow_cm,1)+' cm');panel.append(grid);if(map){const at=[s.latitude,s.longitude];if(marker)marker.setLatLng(at);else marker=L.marker(at,{icon:L.divIcon({className:'',html:'<div class="map-marker"></div>',iconSize:[14,14],iconAnchor:[7,7]})}).addTo(map);}rows.forEach((row,j)=>row.classList.toggle('selected',j===i));cursors.forEach(c=>{const x=c.x(s.distance_km);c.line.setAttribute('x1',x);c.line.setAttribute('x2',x);});}
-const ns='http://www.w3.org/2000/svg';function svgNode(tag,attrs){const n=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,v);return n;}
-function chart(title,keys,unit,colors,legend){const card=el('section',undefined,'chart-card');card.append(el('h2',title),el('p',legend));const svg=svgNode('svg',{viewBox:'0 0 550 230',role:'img','aria-label':title+' along route; select a point with the slider or route table'});const values=keys.flatMap(k=>k==='elevation_m'?plan.segments.map(s=>s[k]):conditions.map(w=>w[k]));let lo=Math.min(...values),hi=Math.max(...values);if(title==='Rain chance'){lo=0;hi=100;}else {const pad=Math.max(1,(hi-lo)*.15);lo-=pad;hi+=pad;if(title==='Wind')lo=0;}const total=Math.max(.001,plan.segments.at(-1).distance_km);const x=v=>48+v/total*482,y=v=>180-(v-lo)/(hi-lo)*155;for(let j=0;j<4;j++){const v=lo+(hi-lo)*j/3,yy=y(v);svg.append(svgNode('line',{x1:48,x2:530,y1:yy,y2:yy,stroke:'#ffffff18'}));const t=svgNode('text',{x:40,y:yy+4,'text-anchor':'end'});t.textContent=number(v,unit==='°C'?1:0);svg.append(t);}for(const d of [0,total/2,total]){const t=svgNode('text',{x:x(d),y:211,'text-anchor':d===0?'start':d===total?'end':'middle'});t.textContent=number(d,1)+' km';svg.append(t);}keys.forEach((k,j)=>{const points=plan.segments.map((s,i)=>x(s.distance_km)+','+y(k==='elevation_m'?s[k]:conditions[i][k])).join(' ');svg.append(svgNode('polyline',{points,fill:'none',stroke:colors[j],'stroke-width':2.5,'stroke-linejoin':'round',...(j?{'stroke-dasharray':'5 4'}:{})}));});const cursor=svgNode('line',{x1:48,x2:48,y1:25,y2:180,class:'cursor'});svg.append(cursor);cursors.push({line:cursor,x});svg.addEventListener('pointerdown',e=>{if(e.button!==0)return;const rect=svg.getBoundingClientRect(),d=Math.max(0,Math.min(total,((e.clientX-rect.left)/rect.width*550-48)/482*total));let best=0;plan.segments.forEach((s,i)=>{if(Math.abs(s.distance_km-d)<Math.abs(plan.segments[best].distance_km-d))best=i;});select(best);});card.append(svg);$('charts').append(card);}
-function showForecast(data){plan=data.plan;conditions=data.conditions;if(!plan||!Array.isArray(conditions)||conditions.length!==plan.segments?.length||conditions.length<2)throw Error('Forecast data is unavailable.');$('name').textContent=plan.name;document.title=plan.name+' · Brezza forecast';$('departure').textContent=date(plan.departure_at)+' · '+time(plan.departure_at)+' departure';const stopMinutes=(plan.stops||[]).reduce((n,s)=>n+s.minutes,0);$('plan-meta').textContent=number(plan.segments.at(-1).distance_km,1)+' km · '+(plan.mode==='pace'?number(plan.value,2)+' min/km':number(plan.value,1)+' km/h')+' · Finish '+date(plan.segments.at(-1).at)+' at '+time(plan.segments.at(-1).at)+(stopMinutes?' · '+number(stopMinutes)+' min of stops':'');$('timezone').textContent=plan.timezone;$('update').textContent=(data.status==='past'?'Forecast for a past departure. Not observed weather. ':data.status==='stale'?'Weather update is delayed. ':'Weather updates before departure. ')+'Updated '+date(data.generated_at)+' at '+time(data.generated_at)+'.';cell($('summary'),'Temperature',number(Math.min(...conditions.map(w=>w.temperature_c)))+'–'+number(Math.max(...conditions.map(w=>w.temperature_c)))+'°C');cell($('summary'),'Highest rain chance',number(Math.max(...conditions.map(w=>w.rain_chance_pct)))+'%');cell($('summary'),'Strongest wind',number(Math.max(...conditions.map(w=>w.wind_kph)))+' km/h');cell($('summary'),'Strongest gust',number(Math.max(...conditions.map(w=>w.gust_kph)))+' km/h');$('forecast').hidden=false;mapRoute(plan.polyline);$('sample').max=conditions.length-1;$('sample').addEventListener('input',e=>select(Number(e.target.value)));if(map)plan.segments.forEach((s,i)=>L.circleMarker([s.latitude,s.longitude],{radius:4,color:'#fff',weight:1,fillColor:'#1687b5',fillOpacity:1}).addTo(map).on('click',()=>select(i)));chart('Temperature',['temperature_c','feels_like_c'],'°C',['#eced9b','#a7b785'],'°C · Temperature / feels like (dashed)');chart('Wind',['wind_kph','gust_kph'],'km/h',['#7dd9ff','#ad91ed'],'km/h · Wind / gusts (dashed)');chart('Rain chance',['rain_chance_pct'],'%',['#7db2ff'],'% · Chance of rain at your arrival');chart('Elevation',['elevation_m'],'m',['#9ed2b1'],'m · Route elevation');plan.segments.forEach((s,i)=>{const w=conditions[i],tr=el('tr'),td=el('td'),b=el('button',date(s.at)+' · '+time(s.at));b.type='button';b.setAttribute('aria-label','Select '+date(s.at)+' '+time(s.at)+' at '+number(s.distance_km,1)+' km');b.addEventListener('click',()=>select(i));td.append(b);tr.append(td);[number(s.distance_km,1)+' km',number(w.temperature_c,1)+'°C',number(w.rain_chance_pct)+'%',number(w.wind_kph)+' / '+number(w.gust_kph)+' km/h',direction(w.wind_from_deg)].forEach(v=>tr.append(el('td',v)));rows.push(tr);$('samples').append(tr);});select(0);}
-function showRoute(data){const r=data.route;if(!r?.polyline)throw Error('This route is unavailable.');$('page-kind').textContent='Shared route';$('name').textContent=r.name;document.title=r.name+' · Brezza';$('departure').textContent=number(r.distance_m/1000,1)+' km · '+number(r.elevation_gain_m)+' m climbing';$('plan-meta').textContent='A route shared from Brezza.';['summary','point','sample-control','charts','table-section','weather-attribution'].forEach(id=>$(id).hidden=true);document.querySelector('.journey').style.gridTemplateColumns='1fr';$('forecast').hidden=false;mapRoute(r.polyline);}
-async function load(){try{if(!['f','r'].includes(kind)||!id||!/^[0-9a-f-]{36}$/i.test(id))throw Error('This link is incomplete. Ask the sender for the full route link.');const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),45000);let response;try{response=await fetch(api+'/'+kind+'/'+encodeURIComponent(id),{signal:controller.signal,cache:'no-store'});}finally{clearTimeout(timer);}if(!response.ok)throw Error(response.status===404||response.status===410?'This link is no longer available. Ask the sender for a new link.':'The forecast could not load. Please try again shortly.');const data=await response.json();kind==='f'?showForecast(data):showRoute(data);$('message').hidden=true;}catch(error){$('forecast').hidden=true;$('message').textContent=error.name==='AbortError'?'The forecast took too long to load. Please reload this page.':error.message;}}
-load();
+  "use strict";
+  const $ = (id) => document.getElementById(id),
+    api = "https://brezza-backend-production.up.railway.app";
+  const parts = location.pathname.split("/").filter(Boolean),
+    kind = parts[0];
+  const id = parts[1] || new URLSearchParams(location.search).get("slug");
+  const el = (tag, text, cls) => {
+    const n = document.createElement(tag);
+    if (text !== undefined) n.textContent = text;
+    if (cls) n.className = cls;
+    return n;
+  };
+  const number = (v, digits = 0) =>
+    Number(v).toLocaleString(undefined, { maximumFractionDigits: digits });
+  const direction = (v) =>
+    ["N", "NE", "E", "SE", "S", "SW", "W", "NW"][Math.round(v / 45) % 8];
+  let plan,
+    conditions,
+    map,
+    marker,
+    rows = [],
+    cursors = [];
+  const time = (v) =>
+    new Intl.DateTimeFormat(undefined, {
+      timeZone: plan.timezone,
+      hour: "numeric",
+      minute: "2-digit",
+    }).format(new Date(v));
+  const date = (v) =>
+    new Intl.DateTimeFormat(undefined, {
+      timeZone: plan.timezone,
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }).format(new Date(v));
+  function decode(s) {
+    let i = 0,
+      lat = 0,
+      lng = 0,
+      result = [];
+    while (i < s.length) {
+      const part = () => {
+        let value = 0,
+          shift = 0,
+          b;
+        do {
+          if (i >= s.length || shift > 30)
+            throw Error("Invalid route geometry");
+          b = s.charCodeAt(i++) - 63;
+          if (b < 0 || b > 63) throw Error("Invalid route geometry");
+          value |= (b & 31) << shift;
+          shift += 5;
+        } while (b >= 32);
+        return value & 1 ? ~(value >> 1) : value >> 1;
+      };
+      lat += part();
+      lng += part();
+      result.push([lat / 1e5, lng / 1e5]);
+    }
+    return result;
+  }
+  function mapRoute(polyline) {
+    if (!window.L) {
+      $("map").textContent =
+        "The map could not load. Forecast details are available below.";
+      return;
+    }
+    map = L.map("map", { scrollWheelZoom: false });
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution:
+        '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      maxZoom: 19,
+    }).addTo(map);
+    const coords = decode(polyline);
+    if (coords.length < 2) throw Error("Route geometry is unavailable");
+    const line = L.polyline(coords, { color: "#1687b5", weight: 5 }).addTo(map);
+    map.fitBounds(line.getBounds(), { padding: [28, 28], maxZoom: 15 });
+  }
+  function cell(parent, label, value) {
+    const c = el("div");
+    c.append(el("small", label), el("strong", value));
+    parent.append(c);
+  }
+  function select(i) {
+    i = Math.max(0, Math.min(conditions.length - 1, i));
+    const s = plan.segments[i],
+      w = conditions[i];
+    $("sample").value = i;
+    $("sample-label").textContent =
+      number(s.distance_km, 1) + " km · " + time(s.at);
+    const panel = $("point");
+    panel.replaceChildren(
+      el(
+        "div",
+        i === 0
+          ? "START"
+          : i === conditions.length - 1
+            ? "FINISH"
+            : "ON THE ROUTE",
+        "eyebrow",
+      ),
+      el("h2", time(s.at)),
+      el(
+        "p",
+        date(s.at) + " · " + number(s.distance_km, 1) + " km",
+        "point-distance",
+      ),
+    );
+    const grid = el("div", undefined, "point-grid");
+    cell(grid, "Temperature", number(w.temperature_c, 1) + "°C");
+    cell(grid, "Feels like", number(w.feels_like_c, 1) + "°C");
+    cell(grid, "Rain chance", number(w.rain_chance_pct) + "%");
+    cell(grid, "Rain / hour", number(w.rain_mm, 1) + " mm");
+    cell(
+      grid,
+      "Wind from " + direction(w.wind_from_deg),
+      number(w.wind_kph) + " km/h",
+    );
+    cell(grid, "Gusts", number(w.gust_kph) + " km/h");
+    cell(grid, "Elevation", number(s.elevation_m) + " m");
+    cell(grid, "Humidity", number(w.humidity_pct) + "%");
+    cell(grid, "Cloud", number(w.cloud_pct) + "%");
+    cell(grid, "Visibility", number(w.visibility_m / 1000, 1) + " km");
+    cell(grid, "UV index", number(w.uv));
+    if (w.snow_cm > 0) cell(grid, "Snow / hour", number(w.snow_cm, 1) + " cm");
+    panel.append(grid);
+    if (map) {
+      const at = [s.latitude, s.longitude];
+      if (marker) marker.setLatLng(at);
+      else
+        marker = L.marker(at, {
+          icon: L.divIcon({
+            className: "",
+            html: '<div class="map-marker"><span></span></div>',
+            iconSize: [28, 36],
+            iconAnchor: [14, 36],
+            tooltipAnchor: [0, -36],
+          }),
+          zIndexOffset: 1000,
+          title: "Selected forecast point",
+        }).addTo(map);
+    }
+    rows.forEach((row, j) => row.classList.toggle("selected", j === i));
+    cursors.forEach((c) => {
+      const x = c.x(new Date(s.at).getTime());
+      c.line.setAttribute("x1", x);
+      c.line.setAttribute("x2", x);
+    });
+  }
+  const ns = "http://www.w3.org/2000/svg";
+  function svgNode(tag, attrs) {
+    const n = document.createElementNS(ns, tag);
+    for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+    return n;
+  }
+  function chart(title, keys, unit, colors, legend) {
+    const card = el("section", undefined, "chart-card");
+    card.append(el("h2", title), el("p", legend));
+    const svg = svgNode("svg", {
+      viewBox: "0 0 550 230",
+      role: "img",
+      "aria-label":
+        title +
+        " by arrival time; select a point with the slider or route table",
+    });
+    const values = keys.flatMap((k) =>
+      k === "elevation_m"
+        ? plan.segments.map((s) => s[k])
+        : conditions.map((w) => w[k]),
+    );
+    let lo = Math.min(...values),
+      hi = Math.max(...values);
+    if (title === "Rain chance") {
+      lo = 0;
+      hi = 100;
+    } else {
+      const pad = Math.max(1, (hi - lo) * 0.15);
+      lo -= pad;
+      hi += pad;
+      if (["Wind", "Rainfall", "Snowfall"].includes(title)) lo = 0;
+    }
+    const start = new Date(plan.segments[0].at).getTime(),
+      total = Math.max(1, new Date(plan.segments.at(-1).at).getTime() - start);
+    const x = (v) => 48 + ((v - start) / total) * 482,
+      y = (v) => 180 - ((v - lo) / (hi - lo)) * 155;
+    for (let j = 0; j < 4; j++) {
+      const v = lo + ((hi - lo) * j) / 3,
+        yy = y(v);
+      svg.append(
+        svgNode("line", {
+          x1: 48,
+          x2: 530,
+          y1: yy,
+          y2: yy,
+          stroke: "#ffffff18",
+        }),
+      );
+      const t = svgNode("text", { x: 40, y: yy + 4, "text-anchor": "end" });
+      t.textContent = number(v, ["°C", "mm/h", "cm/h"].includes(unit) ? 1 : 0);
+      svg.append(t);
+    }
+    for (const d of [0, total / 2, total]) {
+      const t = svgNode("text", {
+        x: x(start + d),
+        y: 211,
+        "text-anchor": d === 0 ? "start" : d === total ? "end" : "middle",
+      });
+      t.textContent = time(start + d);
+      svg.append(t);
+    }
+    keys.forEach((k, j) => {
+      const points = plan.segments
+        .map(
+          (s, i) =>
+            x(new Date(s.at).getTime()) +
+            "," +
+            y(k === "elevation_m" ? s[k] : conditions[i][k]),
+        )
+        .join(" ");
+      svg.append(
+        svgNode("polyline", {
+          points,
+          fill: "none",
+          stroke: colors[j],
+          "stroke-width": 2.5,
+          "stroke-linejoin": "round",
+          ...(j ? { "stroke-dasharray": "5 4" } : {}),
+        }),
+      );
+    });
+    const cursor = svgNode("line", {
+      x1: 48,
+      x2: 48,
+      y1: 25,
+      y2: 180,
+      class: "cursor",
+    });
+    svg.append(cursor);
+    cursors.push({ line: cursor, x });
+    svg.addEventListener("pointerdown", (e) => {
+      if (e.button !== 0) return;
+      const rect = svg.getBoundingClientRect(),
+        d = Math.max(
+          0,
+          Math.min(
+            total,
+            ((((e.clientX - rect.left) / rect.width) * 550 - 48) / 482) * total,
+          ),
+        );
+      let best = 0;
+      plan.segments.forEach((s, i) => {
+        if (
+          Math.abs(new Date(s.at).getTime() - start - d) <
+          Math.abs(new Date(plan.segments[best].at).getTime() - start - d)
+        )
+          best = i;
+      });
+      select(best);
+    });
+    card.append(svg);
+    $("charts").append(card);
+  }
+  function showForecast(data) {
+    plan = data.plan;
+    conditions = data.conditions;
+    if (
+      !plan ||
+      !Array.isArray(conditions) ||
+      conditions.length !== plan.segments?.length ||
+      conditions.length < 2
+    )
+      throw Error("Forecast data is unavailable.");
+    $("name").textContent = plan.name;
+    document.title = plan.name + " · Brezza forecast";
+    $("departure").textContent =
+      date(plan.departure_at) +
+      " · " +
+      time(plan.departure_at) +
+      " departure · " +
+      plan.timezone;
+    const stopMinutes = (plan.stops || []).reduce((n, s) => n + s.minutes, 0);
+    $("plan-meta").textContent =
+      number(plan.segments.at(-1).distance_km, 1) +
+      " km · " +
+      (plan.mode === "pace"
+        ? number(plan.value, 2) + " min/km"
+        : number(plan.value, 1) + " km/h") +
+      " · Finish " +
+      date(plan.segments.at(-1).at) +
+      " at " +
+      time(plan.segments.at(-1).at) +
+      (stopMinutes ? " · " + number(stopMinutes) + " min of stops" : "");
+    $("timezone").textContent = plan.timezone;
+    $("update").textContent =
+      (data.status === "past"
+        ? "Forecast for a past departure. Not observed weather. "
+        : data.status === "stale"
+          ? "Weather update is delayed. "
+          : "Weather updates before departure. ") +
+      "Updated " +
+      date(data.generated_at) +
+      " at " +
+      time(data.generated_at) +
+      ".";
+    cell(
+      $("summary"),
+      "Temperature",
+      number(Math.min(...conditions.map((w) => w.temperature_c))) +
+        "–" +
+        number(Math.max(...conditions.map((w) => w.temperature_c))) +
+        "°C",
+    );
+    cell(
+      $("summary"),
+      "Highest rain chance",
+      number(Math.max(...conditions.map((w) => w.rain_chance_pct))) + "%",
+    );
+    cell(
+      $("summary"),
+      "Strongest wind",
+      number(Math.max(...conditions.map((w) => w.wind_kph))) + " km/h",
+    );
+    cell(
+      $("summary"),
+      "Strongest gust",
+      number(Math.max(...conditions.map((w) => w.gust_kph))) + " km/h",
+    );
+    $("forecast").hidden = false;
+    mapRoute(plan.polyline);
+    $("sample").max = conditions.length - 1;
+    $("sample").addEventListener("input", (e) =>
+      select(Number(e.target.value)),
+    );
+    if (map)
+      plan.segments.forEach((s, i) => {
+        const w = conditions[i];
+        if (w.wind_kph < 1) return;
+        const arrow = L.divIcon({
+          className: "wind-marker",
+          html:
+            '<svg viewBox="0 0 32 32" style="transform:rotate(' +
+            ((w.wind_from_deg + 180) % 360) +
+            'deg)" aria-hidden="true"><path d="M16 29V4M5 15L16 4l11 11"/></svg>',
+          iconSize: [30, 30],
+          iconAnchor: [15, 15],
+        });
+        L.marker([s.latitude, s.longitude], {
+          icon: arrow,
+          title:
+            "Wind from " +
+            direction(w.wind_from_deg) +
+            " · " +
+            number(w.wind_kph) +
+            " km/h",
+        })
+          .addTo(map)
+          .bindTooltip(
+            "Wind from " +
+              direction(w.wind_from_deg) +
+              " · " +
+              number(w.wind_kph) +
+              " km/h",
+          )
+          .on("click", () => select(i));
+      });
+    chart(
+      "Wind",
+      ["wind_kph", "gust_kph"],
+      "km/h",
+      ["#7dd9ff", "#ad91ed"],
+      "km/h · Wind / gusts (dashed)",
+    );
+    chart(
+      "Temperature",
+      ["temperature_c", "feels_like_c"],
+      "°C",
+      ["#eced9b", "#a7b785"],
+      "°C · Temperature / feels like (dashed)",
+    );
+    chart(
+      "Rain chance",
+      ["rain_chance_pct"],
+      "%",
+      ["#7db2ff"],
+      "% · Chance of rain at your arrival",
+    );
+    chart(
+      "Rainfall",
+      ["rain_mm"],
+      "mm/h",
+      ["#7db2ff"],
+      "mm/h · Rain amount in the forecast hour",
+    );
+    if (conditions.some((w) => w.snow_cm > 0))
+      chart(
+        "Snowfall",
+        ["snow_cm"],
+        "cm/h",
+        ["#e0eaff"],
+        "cm/h · Snow amount in the forecast hour",
+      );
+    chart(
+      "Elevation",
+      ["elevation_m"],
+      "m",
+      ["#9ed2b1"],
+      "m · Route elevation",
+    );
+    plan.segments.forEach((s, i) => {
+      const w = conditions[i],
+        tr = el("tr"),
+        td = el("td"),
+        b = el("button", date(s.at) + " · " + time(s.at));
+      b.type = "button";
+      b.setAttribute(
+        "aria-label",
+        "Select " +
+          date(s.at) +
+          " " +
+          time(s.at) +
+          " at " +
+          number(s.distance_km, 1) +
+          " km",
+      );
+      b.addEventListener("click", () => select(i));
+      td.append(b);
+      tr.append(td);
+      [
+        number(s.distance_km, 1) + " km",
+        number(w.temperature_c, 1) + "°C",
+        number(w.rain_chance_pct) + "%",
+        number(w.wind_kph) + " / " + number(w.gust_kph) + " km/h",
+        direction(w.wind_from_deg),
+      ].forEach((v) => tr.append(el("td", v)));
+      rows.push(tr);
+      $("samples").append(tr);
+    });
+    select(0);
+  }
+  function showRoute(data) {
+    const r = data.route;
+    if (!r?.polyline) throw Error("This route is unavailable.");
+    $("page-kind").textContent = "Shared route";
+    $("name").textContent = r.name;
+    document.title = r.name + " · Brezza";
+    $("departure").textContent =
+      number(r.distance_m / 1000, 1) +
+      " km · " +
+      number(r.elevation_gain_m) +
+      " m climbing";
+    $("plan-meta").textContent = "A route shared from Brezza.";
+    [
+      "summary",
+      "point",
+      "map-legend",
+      "sample-control",
+      "charts",
+      "table-section",
+      "weather-attribution",
+    ].forEach((id) => ($(id).hidden = true));
+    document.querySelector(".journey").style.gridTemplateColumns = "1fr";
+    $("forecast").hidden = false;
+    mapRoute(r.polyline);
+  }
+  async function load() {
+    try {
+      if (!["f", "r"].includes(kind) || !id || !/^[0-9a-f-]{36}$/i.test(id))
+        throw Error(
+          "This link is incomplete. Ask the sender for the full route link.",
+        );
+      const controller = new AbortController(),
+        timer = setTimeout(() => controller.abort(), 45000);
+      let response;
+      try {
+        response = await fetch(
+          api + "/" + kind + "/" + encodeURIComponent(id),
+          { signal: controller.signal, cache: "no-store" },
+        );
+      } finally {
+        clearTimeout(timer);
+      }
+      if (!response.ok)
+        throw Error(
+          response.status === 404 || response.status === 410
+            ? "This link is no longer available. Ask the sender for a new link."
+            : "The forecast could not load. Please try again shortly.",
+        );
+      const data = await response.json();
+      kind === "f" ? showForecast(data) : showRoute(data);
+      $("message").hidden = true;
+    } catch (error) {
+      $("forecast").hidden = true;
+      $("message").textContent =
+        error.name === "AbortError"
+          ? "The forecast took too long to load. Please reload this page."
+          : error.message;
+    }
+  }
+  load();
 })();
