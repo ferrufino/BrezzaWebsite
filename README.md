@@ -1,105 +1,19 @@
-# Automatic App Landing Page
-**Create and deploy an iOS app landing page on GitHub Pages in only five minutes.**
+# Brezza website
 
-Designed for GitHub Pages for super easy set up. 
+Plain HTML, CSS and JavaScript. No Jekyll or YAML content configuration.
 
-🔧 Fork this repo
+- `index.html`: landing page.
+- `assets/site.css`, `assets/site.js`: design and reduced-motion-aware scroll effects.
+- `f/index.html`, `assets/forecast.js`, `assets/forecast.css`: public forecast viewer.
+- `r/index.html`: existing route links use the same viewer.
+- `404.html`: GitHub Pages fallback for `/f/{id}` and `/r/{id}`.
+- `policy.html`, `policy/index.html`: existing policy and compatibility URL.
+- `.github/workflows/pages.yml`: publishes static files; no site build step.
 
-🗝 Enter iOS App ID in `_config.yml`
+Forecasts come from the production backend, not sample weather. A forecast link fixes the route, departure, speed/pace, stops and arrival times. The server updates weather at most hourly before departure; afterward the page labels it a past forecast. Shared pages do not include Health, readiness, gear or user identity.
 
-📲 Upload video preview or screenshot
+## Content sources — checked 12 November 2026
 
-🎨 Customise site in `_config.yml` (no HTML/CSS)
+Apple Canada lookup for app 6740043033: rating 4.95/5, 20 ratings. Reviews from Apple's Canada customer-review feed; excerpts retain their authors. Public route count: 732 rows with `is_public = true` in Brezza Supabase. This is a route count, not a count of customers or completed forecasts.
 
-✅ Site becomes live at GitHub Pages repository URL, e.g. `https://your-username.github.io/your-repo-name/`.
-
-<img src="https://emilbaehr.com/files/jayson1.png" width="440"> <img src="https://emilbaehr.com/files/slor1.png" width="440">
-
-## Quick Start
-
-### Step 1: Fork this repo.
-After forking the repo, your site will be live immediately on your personal Github Pages account, e.g. `https://yourusername.github.io/your-repo-name/`.
-
-*Make sure GitHub Pages is enabled for your repo. It might take some time for the site to propagate entirely.*
-
-
-
-### Step 2: Enter iOS App ID in `_config.yml`
-Enter your iOS app ID in the `ios_app_id` field and commit your changes. Your site will automatically rebuild with your app icon, name, price and link to App Store.
-
-You can go on with customising almost anything in the `_config.yml` file. 
-
-Things you can customise in `_config.yml`:
-- App Name
-- App Icon
-- App Description
-- App Price
-- App Store Link
-- Play Store Link
-- Press Kit Download Link
-- Cover Image
-- Cover Overlay Color
-- Background Color
-- Text Colors
-- iPhone Device Color
-- Your Name / Company Name
-- Link to Website
-- Social Links and Contact Info
-- Feature List (Title, text, icon)
-
-
-
-### Step 3: Add screenshot or video
-
-
-
-#### Adding a screenshot
-Upload a `.png` or `.jpg` of your app to the folder `assets/screenshot/`. The name does not matter. Be sure to delete the placeholder `yourscreenshot.png`.
-
-
-
-#### Adding video
-Upload your video to the folder `assets/videos/`. To have support for most browsers, you need to upload two files – one for Safari and one for Chrome/Firefox.
-
-Video formats supported by Chrome and Firefox:
-- `.webm`
-- `.ogg`
-
-Video formats supported by Safari:
-- `.mp4`
-- `.mov`
-
-
-
-#### Resolutions
-The videos and screenshots must have one of the following resolutions:
-- 828x1792
-- 1125x2436
-- 1242x2688
-
-
-
-## Feedback
-If you have feedback regarding bugs or improvements, open an issue, @ me on Twitter or write me an email. You can find my contact info on my website.
-
-I'd love to see the sites you create using this little tool.
-
-
-
-## Credits
-- [Jekyll](https://github.com/jekyll/jekyll)
-- [FontAwesome](https://fortawesome.github.io/Font-Awesome/)
-
-
-
-## Donations
-[Donations are welcome](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=S8ZZT3JXJPN92&currency_code=USD&source=url)
-
-
-## Author
-[Emil Baehr](https://emilbaehr.com/)
-
-
-
-## License
-[MIT License](LICENSE)
+The current public App Store screenshots (02 and 03) and the existing mountain cycling image are used. Leaflet 1.9.4 is vendored with its license. Weather attribution uses Apple's public `/attribution/en` metadata; maps use attributed OpenStreetMap tiles.

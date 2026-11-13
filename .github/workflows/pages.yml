@@ -1,0 +1,31 @@
+name: Publish Brezza website
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - name: Package static files
+        run: |
+          mkdir -p _site/assets
+          cp index.html 404.html policy.html mapHike.html CNAME .nojekyll _site/
+          cp -R .well-known f r policy _site/
+          cp -R assets/screenshot assets/vendor _site/assets/
+          cp assets/site.css assets/site.js assets/forecast.css assets/forecast.js assets/headerimage.png assets/appIcon.png _site/assets/
+      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/deploy-pages@v4
+        id: deployment
