@@ -468,7 +468,7 @@
       $("samples").append(tr);
     });
     select(0);
-    $("share-link").addEventListener("click", async () => {
+    $("share-link")?.addEventListener("click", async () => {
       const button = $("share-link"), url = location.origin + "/f/" + id;
       try {
         if (navigator.share) await navigator.share({ title: document.title, url });
@@ -502,7 +502,10 @@
       "table-section",
       "weather-attribution",
       "share-link",
-    ].forEach((id) => ($(id).hidden = true));
+    ].forEach((id) => {
+      const node = $(id);
+      if (node) node.hidden = true;
+    });
     document.querySelector(".journey").style.gridTemplateColumns = "1fr";
     $("forecast").hidden = false;
     mapRoute(r.polyline);

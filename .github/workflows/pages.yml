@@ -24,6 +24,7 @@ jobs:
           mkdir -p _site/assets
           cp index.html 404.html policy.html mapHike.html CNAME .nojekyll _site/
           cp -R .well-known f r policy _site/
+          cp f/index.html _site/404.html
           cp -R assets/screenshot assets/vendor _site/assets/
           cp assets/site.css assets/site.js assets/forecast.css assets/forecast.js assets/headerimage.png assets/appIcon.png _site/assets/
       - uses: actions/upload-pages-artifact@v3
