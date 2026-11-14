@@ -39,6 +39,7 @@
         <div class="forecast-heading">
           <div class="eyebrow" id="page-kind">Shared route forecast</div>
           <h1 id="name"></h1>
+          <button class="button outline" id="share-link" type="button">Share forecast ↗</button>
           <p class="departure" id="departure"></p>
           <p class="muted" id="plan-meta"></p>
           <p class="update" id="update"></p>
@@ -49,7 +50,7 @@
           <aside id="point" class="point-panel" aria-live="polite"></aside>
         </section>
         <div class="map-legend" id="map-legend">
-          <span>↑ Arrows show where the wind blows</span
+          <span>↑ Larger arrows mean stronger wind. Arrows point downwind.</span
           ><span class="selected-key">◆ Selected forecast point</span>
         </div>
         <div class="sample-control" id="sample-control">
@@ -63,7 +64,8 @@
           id="charts"
           aria-label="Weather along the route"
         ></section>
-        <section id="table-section">
+        <details id="table-section">
+          <summary>All forecast points</summary>
           <div class="section-heading">
             <h2>Along the route</h2>
             <span class="muted" id="timezone"></span>
@@ -83,7 +85,7 @@
               <tbody id="samples"></tbody>
             </table>
           </div>
-        </section>
+        </details>
         <p class="weather-attribution" id="weather-attribution">
           <a href="https://weatherkit.apple.com/legal-attribution.html"
             ><img

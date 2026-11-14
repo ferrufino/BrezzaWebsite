@@ -118,13 +118,18 @@
       number(w.wind_kph) + " km/h",
     );
     cell(grid, "Gusts", number(w.gust_kph) + " km/h");
-    cell(grid, "Elevation", number(s.elevation_m) + " m");
-    cell(grid, "Humidity", number(w.humidity_pct) + "%");
-    cell(grid, "Cloud", number(w.cloud_pct) + "%");
-    cell(grid, "Visibility", number(w.visibility_m / 1000, 1) + " km");
-    cell(grid, "UV index", number(w.uv));
+    const more = el("details", undefined, "point-more");
+    more.append(el("summary", "More conditions"));
+    const extra = el("div", undefined, "point-grid");
+    cell(extra, "Elevation", number(s.elevation_m) + " m");
+    cell(extra, "Humidity", number(w.humidity_pct) + "%");
+    cell(extra, "Cloud", number(w.cloud_pct) + "%");
+    cell(extra, "Visibility", number(w.visibility_m / 1000, 1) + " km");
+    cell(extra, "UV index", number(w.uv));
     if (w.snow_cm > 0) cell(grid, "Snow / hour", number(w.snow_cm, 1) + " cm");
-    panel.append(grid);
+    more.append(extra);
+    panel.append(grid, more);
+    more.addEventListener("toggle", () => map?.invalidateSize());
     if (map) {
       const at = [s.latitude, s.longitude];
       if (marker) marker.setLatLng(at);
@@ -154,11 +159,11 @@
     for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
     return n;
   }
-  function chart(title, keys, unit, colors, legend) {
+  function chart(title, keys, unit, colors, legend, secondaryKey) {
     const card = el("section", undefined, "chart-card");
     card.append(el("h2", title), el("p", legend));
     const svg = svgNode("svg", {
-      viewBox: "0 0 550 230",
+      viewBox: "0 0 580 230",
       role: "img",
       "aria-label":
         title +
@@ -171,7 +176,7 @@
     );
     let lo = Math.min(...values),
       hi = Math.max(...values);
-    if (title === "Rain chance") {
+    if (keys.includes("rain_chance_pct")) {
       lo = 0;
       hi = 100;
     } else {
@@ -209,13 +214,25 @@
       t.textContent = time(start + d);
       svg.append(t);
     }
-    keys.forEach((k, j) => {
+    const rainMax = secondaryKey
+      ? Math.max(0.5, ...conditions.map((w) => w[secondaryKey])) * 1.1
+      : 0;
+    if (secondaryKey) {
+      for (let j = 0; j < 4; j++) {
+        const t = svgNode("text", { x: 538, y: 184 - j * 155 / 3 });
+        t.textContent = number(rainMax * j / 3, 1);
+        svg.append(t);
+      }
+    }
+    [...keys, ...(secondaryKey ? [secondaryKey] : [])].forEach((k, j) => {
       const points = plan.segments
         .map(
           (s, i) =>
             x(new Date(s.at).getTime()) +
             "," +
-            y(k === "elevation_m" ? s[k] : conditions[i][k]),
+            (k === secondaryKey
+              ? 180 - conditions[i][k] / rainMax * 155
+              : y(k === "elevation_m" ? s[k] : conditions[i][k])),
         )
         .join(" ");
       svg.append(
@@ -245,7 +262,7 @@
           0,
           Math.min(
             total,
-            ((((e.clientX - rect.left) / rect.width) * 550 - 48) / 482) * total,
+            ((((e.clientX - rect.left) / rect.width) * 580 - 48) / 482) * total,
           ),
         );
       let best = 0;
@@ -260,6 +277,38 @@
     });
     card.append(svg);
     $("charts").append(card);
+  }
+  function journeyNotes() {
+    const peak = (key) => conditions.reduce(
+      (best, w, i) => w[key] > conditions[best][key] ? i : best, 0,
+    );
+    const cold = conditions.reduce(
+      (best, w, i) => w.feels_like_c < conditions[best].feels_like_c ? i : best, 0,
+    );
+    const note = (title, value, text, i) => {
+      const card = el("button", undefined, "journey-note");
+      card.type = "button";
+      card.append(el("small", title), el("strong", value), el("p", text));
+      card.append(el("span", time(plan.segments[i].at) + " · " + number(plan.segments[i].distance_km, 1) + " km ↗"));
+      card.addEventListener("click", () => {
+        select(i);
+        $("map").scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+      $("summary").append(card);
+    };
+    const wind = peak("gust_kph"), rain = peak("rain_chance_pct");
+    note("Peak gust", number(conditions[wind].gust_kph) + " km/h",
+      conditions[wind].gust_kph >= 25
+        ? "Expect gusts here. Leave space between riders."
+        : "Check the arrows for wind direction along the route.", wind);
+    note("Highest rain chance", number(conditions[rain].rain_chance_pct) + "%",
+      conditions[rain].rain_chance_pct >= 40 || conditions.some((w) => w.rain_mm >= 0.1)
+        ? "Keep a rain layer within reach. Check rainfall below."
+        : "Little rain is forecast. Check again before you leave.", rain);
+    note("Coldest feels like", number(conditions[cold].feels_like_c, 1) + "°C",
+      conditions[cold].feels_like_c < 12
+        ? "Bring a layer for stops and descents."
+        : "Use layers you can adjust as conditions change.", cold);
   }
   function showForecast(data) {
     plan = data.plan;
@@ -303,29 +352,7 @@
       " at " +
       time(data.generated_at) +
       ".";
-    cell(
-      $("summary"),
-      "Temperature",
-      number(Math.min(...conditions.map((w) => w.temperature_c))) +
-        "–" +
-        number(Math.max(...conditions.map((w) => w.temperature_c))) +
-        "°C",
-    );
-    cell(
-      $("summary"),
-      "Highest rain chance",
-      number(Math.max(...conditions.map((w) => w.rain_chance_pct))) + "%",
-    );
-    cell(
-      $("summary"),
-      "Strongest wind",
-      number(Math.max(...conditions.map((w) => w.wind_kph))) + " km/h",
-    );
-    cell(
-      $("summary"),
-      "Strongest gust",
-      number(Math.max(...conditions.map((w) => w.gust_kph))) + " km/h",
-    );
+    journeyNotes();
     $("forecast").hidden = false;
     mapRoute(plan.polyline);
     $("sample").max = conditions.length - 1;
@@ -336,14 +363,16 @@
       plan.segments.forEach((s, i) => {
         const w = conditions[i];
         if (w.wind_kph < 1) return;
+        // Fixed scale across routes: larger arrows mean stronger sustained wind.
+        const size = Math.round(14 + Math.min(w.wind_kph, 50) * 0.52);
         const arrow = L.divIcon({
           className: "wind-marker",
           html:
             '<svg viewBox="0 0 32 32" style="transform:rotate(' +
             ((w.wind_from_deg + 180) % 360) +
             'deg)" aria-hidden="true"><path d="M16 29V4M5 15L16 4l11 11"/></svg>',
-          iconSize: [30, 30],
-          iconAnchor: [15, 15],
+          iconSize: [size, size],
+          iconAnchor: [size / 2, size / 2],
         });
         L.marker([s.latitude, s.longitude], {
           icon: arrow,
@@ -379,18 +408,12 @@
       "°C · Temperature / feels like (dashed)",
     );
     chart(
-      "Rain chance",
+      "Rain",
       ["rain_chance_pct"],
       "%",
-      ["#7db2ff"],
-      "% · Chance of rain at your arrival",
-    );
-    chart(
-      "Rainfall",
-      ["rain_mm"],
-      "mm/h",
-      ["#7db2ff"],
-      "mm/h · Rain amount in the forecast hour",
+      ["#7db2ff", "#7ee0ce"],
+      "Chance % (left) · Rainfall mm/h (right, dashed)",
+      "rain_mm",
     );
     if (conditions.some((w) => w.snow_cm > 0))
       chart(
@@ -437,6 +460,18 @@
       $("samples").append(tr);
     });
     select(0);
+    $("share-link").addEventListener("click", async () => {
+      const button = $("share-link"), url = location.origin + "/f/" + id;
+      try {
+        if (navigator.share) await navigator.share({ title: document.title, url });
+        else {
+          await navigator.clipboard.writeText(url);
+          button.textContent = "Link copied";
+        }
+      } catch (error) {
+        if (error.name !== "AbortError") button.textContent = "Copy the link from your address bar";
+      }
+    });
   }
   function showRoute(data) {
     const r = data.route;
@@ -458,6 +493,7 @@
       "charts",
       "table-section",
       "weather-attribution",
+      "share-link",
     ].forEach((id) => ($(id).hidden = true));
     document.querySelector(".journey").style.gridTemplateColumns = "1fr";
     $("forecast").hidden = false;
