@@ -296,19 +296,27 @@
       });
       $("summary").append(card);
     };
-    const wind = peak("gust_kph"), rain = peak("rain_chance_pct");
-    note("Peak gust", number(conditions[wind].gust_kph) + " km/h",
-      conditions[wind].gust_kph >= 25
+    const gust = peak("gust_kph"), steadyWind = peak("wind_kph"), rain = peak("rain_chance_pct");
+    const windKey = conditions[gust].gust_kph >= conditions[steadyWind].wind_kph ? "gust_kph" : "wind_kph";
+    const wind = windKey === "gust_kph" ? gust : steadyWind;
+    note(windKey === "gust_kph" ? "Peak gust" : "Strongest wind", number(conditions[wind][windKey]) + " km/h",
+      conditions[wind][windKey] >= 25
         ? "Expect gusts here. Leave space between riders."
         : "Check the arrows for wind direction along the route.", wind);
     note("Highest rain chance", number(conditions[rain].rain_chance_pct) + "%",
       conditions[rain].rain_chance_pct >= 40 || conditions.some((w) => w.rain_mm >= 0.1)
         ? "Keep a rain layer within reach. Check rainfall below."
         : "Little rain is forecast. Check again before you leave.", rain);
-    note("Coldest feels like", number(conditions[cold].feels_like_c, 1) + "°C",
-      conditions[cold].feels_like_c < 12
-        ? "Bring a layer for stops and descents."
-        : "Use layers you can adjust as conditions change.", cold);
+    const hot = peak("feels_like_c");
+    if (conditions[hot].feels_like_c >= 28 && conditions[cold].feels_like_c >= 12) {
+      note("Hottest feels like", number(conditions[hot].feels_like_c, 1) + "°C",
+        "Keep water within reach. Plan a shaded stop.", hot);
+    } else {
+      note("Coldest feels like", number(conditions[cold].feels_like_c, 1) + "°C",
+        conditions[cold].feels_like_c < 12
+          ? "Bring a layer for stops and descents."
+          : "Use layers you can adjust as conditions change.", cold);
+    }
   }
   function showForecast(data) {
     plan = data.plan;
