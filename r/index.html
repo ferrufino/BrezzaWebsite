@@ -1,119 +1,87 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="robots" content="noindex" />
-    <title>Route forecast · Brezza</title>
-    <meta
-      name="description"
-      content="Weather along a shared route, matched to departure time and speed."
-    />
-    <link rel="icon" href="/assets/appIcon.png" />
-    <link rel="stylesheet" href="/assets/site.css" />
-    <link rel="stylesheet" href="/assets/vendor/leaflet.css" />
-    <link rel="stylesheet" href="/assets/forecast.css" />
-    <script defer src="/assets/vendor/leaflet.js"></script>
-    <script defer src="/assets/forecast.js"></script>
-  </head>
-  <body>
-    <header>
-      <nav class="wrap">
-        <a class="brand" href="/"
-          ><img
-            src="/assets/appIcon.png"
-            alt=""
-            width="35"
-            height="35"
-          />brezza</a
-        ><a class="button" href="https://apps.apple.com/app/id6740043033"
-          >Download App ↗</a
-        >
-      </nav>
-    </header>
-    <main class="wrap forecast-page">
-      <div id="message" role="status" class="message">
-        Loading the route forecast…
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>Route forecast · Brezza</title>
+  <meta name="description" content="Weather along a shared route, matched to departure time and speed." />
+  <link rel="icon" href="/assets/appIcon.png" />
+  <link rel="stylesheet" href="/assets/site.css" />
+  <link rel="stylesheet" href="/assets/vendor/leaflet.css" />
+  <link rel="stylesheet" href="/assets/forecast.css?v=20261119-layout" />
+  <script defer src="/assets/vendor/leaflet.js"></script>
+  <script defer src="/assets/vendor/html2canvas.min.js"></script>
+  <script defer src="/assets/forecast.js?v=20261119-layout"></script>
+</head>
+<body>
+  <header>
+    <nav class="wrap">
+      <a class="brand" href="/"><img src="/assets/appIcon.png" alt="" width="35" height="35" />brezza</a>
+      <a class="button" href="https://apps.apple.com/app/id6740043033">Download app</a>
+    </nav>
+  </header>
+  <main class="wrap forecast-page">
+    <div id="message" role="status" class="message">Loading the route forecast…</div>
+    <article id="forecast" hidden>
+      <div class="report-actions" id="report-actions">
+        <button class="button outline" id="share-link" type="button">Share link</button>
+        <button class="button" id="save-image" type="button">Save image</button>
       </div>
-      <article id="forecast" hidden>
+      <p id="export-message" class="update" role="status" hidden></p>
+      <div id="report" class="forecast-report">
         <div class="forecast-heading">
           <div class="eyebrow" id="page-kind">Shared route forecast</div>
           <h1 id="name"></h1>
-          <button class="button outline" id="share-link" type="button">Share forecast ↗</button>
           <p class="departure" id="departure"></p>
           <p class="muted" id="plan-meta"></p>
-          <p class="update" id="update"></p>
         </div>
         <div id="summary" class="weather-summary"></div>
-        <section class="journey">
-          <div id="map" aria-label="Route map"></div>
-          <aside id="point" class="point-panel" aria-live="polite"></aside>
-        </section>
-        <div class="map-legend" id="map-legend">
-          <span>↑ Larger arrows mean stronger wind. Arrows point downwind.</span
-          ><span class="selected-key">◆ Selected forecast point</span>
+        <div class="report-grid" id="charts">
+          <section class="journey" aria-label="Route and selected forecast point">
+            <h2>Route</h2>
+            <div id="map" aria-label="Route map"></div>
+            <div id="selected-point" class="selected-point" aria-live="polite"></div>
+            <div class="sample-control" id="sample-control" data-html2canvas-ignore>
+              <label for="sample">Point on route</label>
+              <input type="range" min="0" value="0" id="sample" />
+              <span id="sample-label"></span>
+            </div>
+            <div class="map-legend" id="map-legend">Larger arrows mean stronger wind. Arrows point downwind.</div>
+          </section>
         </div>
-        <div class="sample-control" id="sample-control">
-          <label for="sample">Point on route</label
-          ><input type="range" min="0" value="0" id="sample" /><span
-            id="sample-label"
-          ></span>
+        <div class="report-footer">
+          <p class="update" id="update"></p>
+          <a class="report-brand" href="https://brezza.cc">brezza.cc</a>
+          <p class="weather-attribution" id="weather-attribution">
+            <a href="https://weatherkit.apple.com/legal-attribution.html"><img src="https://weatherkit.apple.com/assets/branding/en/Apple_Weather_wht_en_2X_090122.png" alt="Apple Weather" width="100" />Apple Weather · Data sources</a>
+          </p>
         </div>
-        <section
-          class="weather-charts"
-          id="charts"
-          aria-label="Weather along the route"
-        ></section>
-        <details id="table-section">
-          <summary>All forecast points</summary>
-          <div class="section-heading">
-            <h2>Along the route</h2>
-            <span class="muted" id="timezone"></span>
-          </div>
-          <div class="table-scroll">
-            <table>
-              <thead>
-                <tr>
-                  <th scope="col">Arrival</th>
-                  <th scope="col">Distance</th>
-                  <th scope="col">Temperature</th>
-                  <th scope="col">Rain chance</th>
-                  <th scope="col">Wind / gust</th>
-                  <th scope="col">Wind from</th>
-                </tr>
-              </thead>
-              <tbody id="samples"></tbody>
-            </table>
-          </div>
-        </details>
-        <p class="weather-attribution" id="weather-attribution">
-          <a href="https://weatherkit.apple.com/legal-attribution.html"
-            ><img
-              src="https://weatherkit.apple.com/assets/branding/en/Apple_Weather_wht_en_2X_090122.png"
-              alt="Apple Weather"
-              width="120"
-            />Weather data sources ↗</a
-          >
-        </p>
-        <section class="forecast-download">
-          <div>
-            <h2>Your next route.<br />Your own forecast.</h2>
-            <p class="muted">Set your route, departure and speed in Brezza.</p>
-          </div>
-          <a class="button blue" href="https://apps.apple.com/app/id6740043033"
-            >Download App ↗</a
-          >
-        </section>
-      </article>
-      <noscript
-        ><p>Enable JavaScript to see the route map and forecast.</p></noscript
-      >
-    </main>
-    <footer>
-      <div class="wrap">
-        <span>Brezza · Weather for the ride ahead</span
-        ><a href="/policy.html">Privacy & terms</a>
       </div>
-    </footer>
-  </body>
+      <details id="more-details" class="more-details">
+        <summary>More details <span>Elevation, conditions and forecast points</span></summary>
+        <div class="details-body">
+          <aside id="point" class="point-panel" aria-live="polite"></aside>
+          <div id="extra-charts" class="extra-charts"></div>
+          <div id="extra-notes" class="extra-notes"></div>
+          <details id="table-section">
+            <summary>All forecast points</summary>
+            <div class="table-scroll">
+              <table>
+                <thead><tr>
+                  <th scope="col">Arrival</th><th scope="col">Distance</th>
+                  <th scope="col">Temperature</th><th scope="col">Rain chance</th>
+                  <th scope="col">Wind / gust</th><th scope="col">Wind from</th>
+                </tr></thead>
+                <tbody id="samples"></tbody>
+              </table>
+            </div>
+          </details>
+        </div>
+      </details>
+    </article>
+    <noscript><p>Enable JavaScript to see the route map and forecast.</p></noscript>
+  </main>
+  <footer><div class="wrap"><span>Brezza · Weather for the ride ahead</span><a href="/policy.html">Privacy & terms</a></div></footer>
+</body>
 </html>
