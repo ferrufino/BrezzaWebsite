@@ -5,6 +5,7 @@
   padding-top: 32px;
   padding-bottom: 60px;
 }
+.forecast-heading { display: flow-root; }
 .forecast-heading h1 {
   font-size: clamp(32px, 4.5vw, 58px);
   max-width: 1000px;
@@ -336,7 +337,7 @@ tr:last-child td {
 .point-more summary, #table-section > summary { cursor: pointer; color: var(--blue); padding: 10px 0; }
 .point-more .point-grid { margin-top: 12px; }
 #table-section > summary { font-size: 18px; }
-#share-link, #save-image { font: inherit; cursor: pointer; }
+#save-image { font: inherit; cursor: pointer; }
 .forecast-actions { float: right; display: flex; gap: 8px; margin-top: 8px; }
 .forecast-actions .button { padding: 10px 16px; font-size: 14px; }
 #save-image:disabled { opacity: .6; cursor: wait; }
@@ -346,6 +347,7 @@ tr:last-child td {
   .weather-summary { grid-template-columns: 1fr; }
   .journey-note { padding: 10px 0; border-right: 0; border-bottom: 1px solid var(--line); }
   .journey-note:last-child { border-bottom: 0; }
+  .journey-note { grid-template-columns: minmax(0, 1fr) auto; }
   .journey-note span { grid-column: 1; }
   .journey-note p { grid-column: 2; text-align: right; max-width: 170px; }
   .weather-summary strong { font-size: 20px; }
@@ -353,4 +355,7 @@ tr:last-child td {
 @media (max-width: 600px) {
   .forecast-actions { float: none; margin: 8px 0 14px; }
   .map-legend { flex-wrap: wrap; gap: 6px; }
+  .chart-card svg text { font-size: 18px; }
+  .sample-control input { min-width: 0; }
+  .sample-control span { min-width: 0; }
 }

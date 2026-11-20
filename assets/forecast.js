@@ -476,18 +476,6 @@
     });
     select(0);
     $("save-image").addEventListener("click", saveImage);
-    $("share-link")?.addEventListener("click", async () => {
-      const button = $("share-link"), url = location.origin + "/f/" + id;
-      try {
-        if (navigator.share) await navigator.share({ title: document.title, url });
-        else {
-          await navigator.clipboard.writeText(url);
-          button.textContent = "Link copied";
-        }
-      } catch (error) {
-        if (error.name !== "AbortError") button.textContent = "Copy the link from your address bar";
-      }
-    });
   }
   async function saveImage() {
     const button = $("save-image"), status = $("export-message");
@@ -497,10 +485,13 @@
     try {
       if (!window.html2canvas) throw Error("Image export could not load. Reload the page and try again.");
       if (!map) throw Error("Wait for the map to load before saving the image.");
+      map.stop();
       await document.fonts.ready;
       const tiles = [...$("map").querySelectorAll(".leaflet-tile")];
       if (!tiles.length) throw Error("Wait for the map to load before saving the image.");
       await Promise.all(tiles.map(tile => tile.decode()));
+      const reportWidth = $("report").getBoundingClientRect().width;
+      const chartFontSize = getComputedStyle($("charts").querySelector("svg text")).fontSize;
       const mapRect = $("map").getBoundingClientRect();
       const mapLayers = [".leaflet-tile", ".leaflet-overlay-pane > svg", ".leaflet-marker-icon"].map(selector => ({
         selector,
@@ -516,6 +507,11 @@
         onclone: doc => {
           // Flatten Leaflet's translated panes only in the exported copy.
           // The live map and its zoom/selection remain untouched.
+          const clonedReport = doc.getElementById("report");
+          // Add an image margin without changing the content width or breakpoints.
+          clonedReport.style.boxSizing = "content-box";
+          clonedReport.style.width = reportWidth + "px";
+          clonedReport.style.padding = "20px";
           const clonedMap = doc.getElementById("map");
           clonedMap.style.width = mapRect.width + "px";
           clonedMap.style.height = mapRect.height + "px";
@@ -539,7 +535,7 @@
           doc.querySelectorAll(".chart-card svg text").forEach(node => {
             node.style.fill = "#a4b1b7";
             node.style.fontFamily = "system-ui, sans-serif";
-            node.style.fontSize = "12px";
+            node.style.fontSize = chartFontSize;
           });
         },
       });
@@ -580,7 +576,6 @@
       "charts",
       "table-section",
       "weather-attribution",
-      "share-link",
       "save-image",
     ].forEach((id) => {
       const node = $(id);
