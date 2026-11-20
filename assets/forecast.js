@@ -296,8 +296,9 @@
     const note = (title, value, text, i) => {
       const card = el("button", undefined, "journey-note");
       card.type = "button";
-      card.append(el("small", title), el("strong", value), el("p", text));
+      card.append(el("small", title), el("strong", value));
       card.append(el("span", time(plan.segments[i].at) + " · " + number(plan.segments[i].distance_km, 1) + " km ↗"));
+      if (text) card.append(el("p", text));
       card.addEventListener("click", () => {
         select(i);
         $("map").scrollIntoView({ behavior: "smooth", block: "center" });
@@ -309,21 +310,21 @@
     const wind = windKey === "gust_kph" ? gust : steadyWind;
     note(windKey === "gust_kph" ? "Peak gust" : "Strongest wind", number(conditions[wind][windKey]) + " km/h",
       conditions[wind][windKey] >= 25
-        ? "Expect gusts here. Leave space between riders."
-        : "Check the arrows for wind direction along the route.", wind);
+        ? "Leave space between riders."
+        : "", wind);
     note("Highest rain chance", number(conditions[rain].rain_chance_pct) + "%",
       conditions[rain].rain_chance_pct >= 40 || conditions.some((w) => w.rain_mm >= 0.1)
-        ? "Keep a rain layer within reach. Check rainfall below."
-        : "Little rain is forecast. Check again before you leave.", rain);
+        ? "Keep a rain layer ready."
+        : "", rain);
     const hot = peak("feels_like_c");
     if (conditions[hot].feels_like_c >= 28 && conditions[cold].feels_like_c >= 12) {
       note("Hottest feels like", number(conditions[hot].feels_like_c, 1) + "°C",
-        "Keep water within reach. Plan a shaded stop.", hot);
+        "Plan water and shaded stops.", hot);
     } else {
       note("Coldest feels like", number(conditions[cold].feels_like_c, 1) + "°C",
         conditions[cold].feels_like_c < 12
-          ? "Bring a layer for stops and descents."
-          : "Use layers you can adjust as conditions change.", cold);
+          ? "Layer up for stops and descents."
+          : "", cold);
     }
   }
   function showForecast(data) {
@@ -377,8 +378,8 @@
       plan.segments.forEach((s, i) => {
         const w = conditions[i];
         if (w.wind_kph < 1) return;
-        // Fixed scale across routes: larger arrows mean stronger sustained wind.
-        const size = Math.round(14 + Math.min(w.wind_kph, 50) * 0.52);
+        // Fixed scale across routes, with visible size differences even in light wind.
+        const size = Math.round(12 + Math.min(Math.max(0, w.wind_kph), 40) * 1.4);
         const arrow = L.divIcon({
           className: "wind-marker",
           html:
