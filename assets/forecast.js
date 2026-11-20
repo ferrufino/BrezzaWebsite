@@ -75,9 +75,8 @@
     }).addTo(map);
     const coords = decode(polyline);
     if (coords.length < 2) throw Error("Route geometry is unavailable");
-    const line = L.polyline(coords, { color: "#ef476f", weight: 5 }).addTo(map);
+    const line = L.polyline(coords, { color: "#1687b5", weight: 5 }).addTo(map);
     map.fitBounds(line.getBounds(), { padding: [28, 28], maxZoom: 15 });
-    new ResizeObserver(() => map.invalidateSize({ pan: false })).observe($("map"));
   }
   function cell(parent, label, value) {
     const c = el("div");
@@ -91,10 +90,6 @@
     $("sample").value = i;
     $("sample-label").textContent =
       number(s.distance_km, 1) + " km · " + time(s.at);
-    $("selected-point").replaceChildren(
-      el("strong", time(s.at) + " · " + number(s.distance_km, 1) + " km"),
-    );
-    $("sample").setAttribute("aria-valuetext", date(s.at) + " · " + time(s.at) + " · " + number(s.distance_km, 1) + " km");
     const panel = $("point");
     panel.replaceChildren(
       el(
@@ -124,13 +119,18 @@
       number(w.wind_kph) + " km/h",
     );
     cell(grid, "Gusts", number(w.gust_kph) + " km/h");
-    cell(grid, "Elevation", number(s.elevation_m) + " m");
-    cell(grid, "Humidity", number(w.humidity_pct) + "%");
-    cell(grid, "Cloud", number(w.cloud_pct) + "%");
-    cell(grid, "Visibility", number(w.visibility_m / 1000, 1) + " km");
-    cell(grid, "UV index", number(w.uv));
+    const more = el("details", undefined, "point-more");
+    more.append(el("summary", "More conditions"));
+    const extra = el("div", undefined, "point-grid");
+    cell(extra, "Elevation", number(s.elevation_m) + " m");
+    cell(extra, "Humidity", number(w.humidity_pct) + "%");
+    cell(extra, "Cloud", number(w.cloud_pct) + "%");
+    cell(extra, "Visibility", number(w.visibility_m / 1000, 1) + " km");
+    cell(extra, "UV index", number(w.uv));
     if (w.snow_cm > 0) cell(grid, "Snow / hour", number(w.snow_cm, 1) + " cm");
-    panel.append(grid);
+    more.append(extra);
+    panel.append(grid, more);
+    more.addEventListener("toggle", () => map?.invalidateSize());
     if (map) {
       const at = [s.latitude, s.longitude];
       if (marker) marker.setLatLng(at);
@@ -152,7 +152,6 @@
       const x = c.x(new Date(s.at).getTime());
       c.line.setAttribute("x1", x);
       c.line.setAttribute("x2", x);
-      c.readout.textContent = time(s.at) + " · " + c.describe(s, w);
     });
   }
   const ns = "http://www.w3.org/2000/svg";
@@ -162,24 +161,15 @@
     if (tag === "text") {
       n.setAttribute("fill", "#a4b1b7");
       n.setAttribute("font-family", "system-ui, sans-serif");
-      n.setAttribute("font-size", "14");
+      n.setAttribute("font-size", "12");
     }
     return n;
   }
-  function chart(title, keys, unit, colors, labels, secondaryKey, target = "charts") {
+  function chart(title, keys, unit, colors, legend, secondaryKey) {
     const card = el("section", undefined, "chart-card");
-    card.append(el("h2", title));
-    const legend = el("div", undefined, "chart-legend");
-    labels.forEach((label, j) => {
-      const item = el("span"), swatch = el("i");
-      swatch.style.borderColor = colors[j];
-      if (j && !secondaryKey) swatch.style.borderTopStyle = "dashed";
-      item.append(swatch, document.createTextNode(label + (secondaryKey ? (j ? " · mm/h" : " · %") : "")));
-      legend.append(item);
-    });
-    card.append(legend);
+    card.append(el("h2", title), el("p", legend));
     const svg = svgNode("svg", {
-      viewBox: "0 0 440 220",
+      viewBox: "0 0 580 230",
       role: "img",
       "aria-label":
         title +
@@ -199,11 +189,11 @@
       const pad = Math.max(1, (hi - lo) * 0.15);
       lo -= pad;
       hi += pad;
-      if (["Wind & gusts", "Rainfall", "Snowfall"].includes(title)) lo = 0;
+      if (["Wind", "Rainfall", "Snowfall"].includes(title)) lo = 0;
     }
     const start = new Date(plan.segments[0].at).getTime(),
       total = Math.max(1, new Date(plan.segments.at(-1).at).getTime() - start);
-    const x = (v) => 48 + ((v - start) / total) * 332,
+    const x = (v) => 48 + ((v - start) / total) * 482,
       y = (v) => 180 - ((v - lo) / (hi - lo)) * 155;
     for (let j = 0; j < 4; j++) {
       const v = lo + ((hi - lo) * j) / 3,
@@ -211,7 +201,7 @@
       svg.append(
         svgNode("line", {
           x1: 48,
-          x2: 380,
+          x2: 530,
           y1: yy,
           y2: yy,
           stroke: "#ffffff18",
@@ -230,43 +220,25 @@
       t.textContent = time(start + d);
       svg.append(t);
     }
-    const axisUnit = svgNode("text", { x: 48, y: 16 });
-    axisUnit.textContent = unit;
-    svg.append(axisUnit);
-    if (secondaryKey) {
-      const rightUnit = svgNode("text", { x: 380, y: 16, "text-anchor": "end" });
-      rightUnit.textContent = "mm/h";
-      svg.append(rightUnit);
-    }
     const rainMax = secondaryKey
       ? Math.max(0.5, ...conditions.map((w) => w[secondaryKey])) * 1.1
       : 0;
     if (secondaryKey) {
       for (let j = 0; j < 4; j++) {
-        const t = svgNode("text", { x: 387, y: 184 - j * 155 / 3 });
+        const t = svgNode("text", { x: 538, y: 184 - j * 155 / 3 });
         t.textContent = number(rainMax * j / 3, 1);
         svg.append(t);
       }
     }
     [...keys, ...(secondaryKey ? [secondaryKey] : [])].forEach((k, j) => {
-      if (k === secondaryKey) {
-        const barWidth = Math.max(1, Math.min(12, 350 / plan.segments.length));
-        plan.segments.forEach((segment, i) => {
-          const height = conditions[i][k] / rainMax * 155;
-          svg.append(svgNode("rect", {
-            x: x(new Date(segment.at).getTime()) - barWidth / 2,
-            y: 180 - height, width: barWidth, height,
-            fill: colors[j], opacity: 0.65, rx: 1,
-          }));
-        });
-        return;
-      }
       const points = plan.segments
         .map(
           (s, i) =>
             x(new Date(s.at).getTime()) +
             "," +
-            y(k === "elevation_m" ? s[k] : conditions[i][k]),
+            (k === secondaryKey
+              ? 180 - conditions[i][k] / rainMax * 155
+              : y(k === "elevation_m" ? s[k] : conditions[i][k])),
         )
         .join(" ");
       svg.append(
@@ -286,14 +258,11 @@
       y1: 25,
       y2: 180,
       class: "cursor",
-      stroke: "#ff7492",
-      "stroke-width": 1.5,
+      stroke: "#ffffff88",
+      "stroke-dasharray": "4 4",
     });
     svg.append(cursor);
-    const readout = el("p", undefined, "chart-selection");
-    const describe = (segment, weather) => [...keys, ...(secondaryKey ? [secondaryKey] : [])]
-      .map((key, j) => labels[j] + " " + number(key === "elevation_m" ? segment[key] : weather[key], 1) + " " + (key === secondaryKey ? "mm/h" : unit)).join(" · ");
-    cursors.push({ line: cursor, x, readout, describe });
+    cursors.push({ line: cursor, x });
     svg.addEventListener("pointerdown", (e) => {
       if (e.button !== 0) return;
       const rect = svg.getBoundingClientRect(),
@@ -301,7 +270,7 @@
           0,
           Math.min(
             total,
-            ((((e.clientX - rect.left) / rect.width) * 440 - 48) / 332) * total,
+            ((((e.clientX - rect.left) / rect.width) * 580 - 48) / 482) * total,
           ),
         );
       let best = 0;
@@ -314,8 +283,8 @@
       });
       select(best);
     });
-    card.append(svg, readout);
-    $(target).append(card);
+    card.append(svg);
+    $("charts").append(card);
   }
   function journeyNotes() {
     const peak = (key) => conditions.reduce(
@@ -333,7 +302,7 @@
         select(i);
         $("map").scrollIntoView({ behavior: "smooth", block: "center" });
       });
-      $("extra-notes").append(card);
+      $("summary").append(card);
     };
     const gust = peak("gust_kph"), steadyWind = peak("wind_kph"), rain = peak("rain_chance_pct");
     const windKey = conditions[gust].gust_kph >= conditions[steadyWind].wind_kph ? "gust_kph" : "wind_kph";
@@ -356,26 +325,6 @@
           ? "Bring a layer for stops and descents."
           : "Use layers you can adjust as conditions change.", cold);
     }
-    let highlight = wind;
-    let headline = "Strongest wind: " + number(conditions[wind][windKey]) + " km/h";
-    if (windKey === "gust_kph") headline = "Peak gusts: " + number(conditions[wind].gust_kph) + " km/h";
-    if (conditions[wind][windKey] >= 45) {
-      headline += ". Take care on exposed sections";
-    } else if (conditions[rain].rain_chance_pct >= 40 || conditions.some(w => w.rain_mm >= 0.1)) {
-      highlight = rain;
-      headline = "Rain possible. Keep a rain layer within reach";
-    } else if (conditions[hot].feels_like_c >= 28) {
-      highlight = hot;
-      headline = "Feels like " + number(conditions[hot].feels_like_c, 1) + "°C. Plan a water stop";
-    } else if (conditions[cold].feels_like_c < 12) {
-      highlight = cold;
-      headline = "Feels like " + number(conditions[cold].feels_like_c, 1) + "°C. Bring a layer";
-    }
-    const jump = el("button", headline + " · " + time(plan.segments[highlight].at), "journey-note");
-    jump.type = "button";
-    jump.addEventListener("click", () => select(highlight));
-    $("summary").append(jump);
-
   }
   function showForecast(data) {
     plan = data.plan;
@@ -459,25 +408,25 @@
           .on("click", () => select(i));
       });
     chart(
-      "Wind & gusts",
+      "Wind",
       ["wind_kph", "gust_kph"],
       "km/h",
-      ["#00c4ce", "#9ed6ff"],
-      ["Wind", "Gusts"],
+      ["#7dd9ff", "#ad91ed"],
+      "km/h · Wind / gusts (dashed)",
     );
     chart(
       "Temperature",
       ["temperature_c", "feels_like_c"],
       "°C",
-      ["#ff797c", "#00c4ce"],
-      ["Temperature", "Feels like"],
+      ["#eced9b", "#a7b785"],
+      "°C · Temperature / feels like (dashed)",
     );
     chart(
       "Rain",
       ["rain_chance_pct"],
       "%",
-      ["#00c4ce", "#429bf5"],
-      ["Chance", "Rainfall"],
+      ["#7db2ff", "#7ee0ce"],
+      "Chance % (left) · Rainfall mm/h (right, dashed)",
       "rain_mm",
     );
     if (conditions.some((w) => w.snow_cm > 0))
@@ -486,18 +435,14 @@
         ["snow_cm"],
         "cm/h",
         ["#e0eaff"],
-        ["Snowfall"],
-        undefined,
-        "extra-charts",
+        "cm/h · Snow amount in the forecast hour",
       );
     chart(
       "Elevation",
       ["elevation_m"],
       "m",
       ["#9ed2b1"],
-      ["Elevation"],
-      undefined,
-      "extra-charts",
+      "m · Route elevation",
     );
     plan.segments.forEach((s, i) => {
       const w = conditions[i],
@@ -593,7 +538,7 @@
           doc.querySelectorAll(".chart-card svg text").forEach(node => {
             node.style.fill = "#a4b1b7";
             node.style.fontFamily = "system-ui, sans-serif";
-            node.style.fontSize = window.innerWidth <= 700 ? "16px" : "14px";
+            node.style.fontSize = "12px";
           });
         },
       });
@@ -629,19 +574,18 @@
     [
       "summary",
       "point",
-      "selected-point",
-      "more-details",
-      "report-actions",
       "map-legend",
       "sample-control",
+      "charts",
       "table-section",
       "weather-attribution",
       "share-link",
+      "save-image",
     ].forEach((id) => {
       const node = $(id);
       if (node) node.hidden = true;
     });
-    $("forecast").classList.add("route-only");
+    document.querySelector(".journey").style.gridTemplateColumns = "1fr";
     $("forecast").hidden = false;
     mapRoute(r.polyline);
   }
