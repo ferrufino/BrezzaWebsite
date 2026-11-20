@@ -334,8 +334,7 @@
       date(plan.departure_at) +
       " · " +
       time(plan.departure_at) +
-      " departure · " +
-      plan.timezone;
+      " departure";
     const stopMinutes = (plan.stops || []).reduce((n, s) => n + s.minutes, 0);
     $("plan-meta").textContent =
       number(plan.segments.at(-1).distance_km, 1) +
@@ -348,7 +347,6 @@
       " at " +
       time(plan.segments.at(-1).at) +
       (stopMinutes ? " · " + number(stopMinutes) + " min of stops" : "");
-    $("timezone").textContent = plan.timezone;
     $("update").textContent =
       (data.status === "past"
         ? "Forecast for a past departure. Not observed weather. "
