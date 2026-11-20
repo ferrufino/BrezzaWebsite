@@ -435,7 +435,7 @@
           html:
             '<svg viewBox="0 0 32 32" style="transform:rotate(' +
             ((w.wind_from_deg + 180) % 360) +
-            'deg)" aria-hidden="true"><path d="M16 29V4M5 15L16 4l11 11"/></svg>',
+            'deg)" aria-hidden="true"><path fill="none" stroke="#193c2f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M16 29V4M5 15L16 4l11 11"/></svg>',
           iconSize: [size, size],
           iconAnchor: [size / 2, size / 2],
         });
