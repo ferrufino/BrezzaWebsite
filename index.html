@@ -20,7 +20,7 @@
     />
     <meta property="og:type" content="website" />
     <link rel="icon" href="/assets/appIcon.png" />
-    <link rel="stylesheet" href="/assets/site.css?v=20261120-brand" />
+    <link rel="stylesheet" href="/assets/site.css?v=20261120-hero" />
     <script defer src="/assets/site.js"></script>
   </head>
   <body>
@@ -47,7 +47,14 @@
       <section class="hero">
         <div class="wrap">
           <div class="eyebrow">For the ride ahead</div>
-          <h1>Your route.<br />Your speed.<br />Your forecast.</h1>
+          <h1 class="hero-title" aria-label="Your route. Your speed. Your forecast.">
+            <span aria-hidden="true">Your</span>
+            <span class="hero-words" aria-hidden="true">
+              <span>route.</span>
+              <span>speed.</span>
+              <span>forecast.</span>
+            </span>
+          </h1>
           <p>
             Weather changes along your route. See the wind, rain and temperature
             for when you reach each part.
